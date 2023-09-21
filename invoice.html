@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="invoice.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+</head>
+
+<body>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="invoice-title">
+                    <h2>Invoice</h2>
+                    <h3 class="pull-right">Order #ID 12345</h3>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <address>
+                            <strong>Data Pemesan:</strong><br>
+                            Sodikan Kece<br>
+                            Waruberon rt08 rw01 Balongbendo Sidoarjo<br>
+                            08xxxxxxxx<br>
+                            No NIK pemesan
+                        </address>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <address>
+                            <strong>Pembayaran ke:</strong><br>
+                            <img src="images/logo.png" width="200px" alt="">
+                        </address>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <address>
+                            <strong>Pembayaran : </strong><br>
+                            Transfer : "..." (No Rekening Pemesan)<br>
+                            emailpemesan@email.com
+                        </address>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <address>
+                            <strong>Tanggal Order:</strong><br>
+                            13 Maret 2023<br><br>
+                        </address>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Rincian Pesanan</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <td><strong>Item</strong></td>
+                                        <td class="text-center"><strong>Check-In</strong></td>
+                                        <td class="text-center"><strong>Harga</strong></td>
+                                        <td class="text-center"><strong>Kuantitas</strong></td>
+                                        <td class="text-center"><strong>Total</strong></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- foreach ($order->lineItems as $line) or some such thing here -->
+                                    <tr>
+                                        <td>Perusahaan - Paket A - Gathering (No Trainer)</td>
+                                        <td class="text-center">17/4/23</td>
+                                        <td class="text-center">Rp 75.000</td>
+                                        <td class="text-center">30</td>
+                                        <td class="text-right">Rp 2.250.000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="thick-line"></td>
+                                        <td class="thick-line"></td>
+                                        <td class="thick-line"></td>
+                                        <td class="thick-line text-center"><strong>Subtotal</strong></td>
+                                        <td class="thick-line text-right">Rp 2.250.000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center"><strong>Keterangan</strong></td>
+                                        <td class="text-right">Sudah Terbayar</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-danger bg-danger">
+                            <b>*Pastikan anda menyimpan bukti invoice ini</b>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+</html>
