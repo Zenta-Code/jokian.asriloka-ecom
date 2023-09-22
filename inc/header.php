@@ -81,7 +81,7 @@
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form>
+            <form method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title d-flex align-item-center">
                         <i class="bi bi-person-fill fs-3 me-2"></i>User Registration
@@ -95,44 +95,87 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-6 ps-0 mb-3">
-                                <label class="form-label">Name</label>
-                                <input type="text" class="form-control shadow-none">
+                                <label for="user_name" class="form-label">Name</label>
+                                <input id="user_name" name="user_name" value="John Doe" type="text"
+                                    class="form-control shadow-none" required>
                             </div>
                             <div class="col-md-6 p-0">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control shadow-none">
+                                <label for="user_email" class="form-label">Email</label>
+                                <input id="user_email" name="user_email" value="john1@gmail.com" type="email"
+                                    class="form-control shadow-none" required>
                             </div>
                             <div class="col-md-6 ps-0 mb-3">
-                                <label class="form-label">Phone Number</label>
-                                <input type="number" class="form-control shadow-none">
+                                <label for="user_phone" class="form-label">Phone Number</label>
+                                <input id="user_phone" name="user_phone" value="08519801980" type="number"
+                                    class="form-control shadow-none">
                             </div>
                             <div class="col-md-6 p-0 mb-3">
-                                <label class="form-label">Picture</label>
-                                <input type="file" class="form-control shadow-none">
+                                <label for="user_picture" class="form-label">Picture</label>
+                                <input id="user_picture" name="user_picture" type="file"
+                                    class="form-control shadow-none">
                             </div>
                             <div class="col-md-6 ps-0 mb-3">
-                                <label class="form-label">Date of birth</label>
-                                <input type="date" class="form-control shadow-none">
+                                <label for="user_dob" class="form-label">Date of birth</label>
+                                <input id="user_dob" name="user_dob" type="date" class="form-control shadow-none"
+                                    required>
                             </div>
                             <div class="col-md-6 p-0 mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control shadow-none">
+                                <label for="user_password" class="form-label">Password</label>
+                                <input id="user_password" name="user_password" value="password" type="password"
+                                    class="form-control shadow-none" required>
                             </div>
                             <div class="col-md-6 ps-0 mb-3">
-                                <label class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control shadow-none">
+                                <label for="user_confirm_password" class="form-label">Confirm Password</label>
+                                <input id="user_confirm_password" name="user_confirm_password" value="password"
+                                    type="password" class="form-control shadow-none" required>
                             </div>
                             <div class="col-md-6 p-0 mb-3">
-                                <label class="form-label">Address</label>
-                                <textarea class="form-control shadow-none" rows="3"></textarea>
+                                <label for="user_address" class="form-label">Address</label>
+                                <textarea id="user_address" name="user_address" class="form-control shadow-none"
+                                    rows="3" required></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="text-center my-1">
-                        <button type="submit" class="btn btn-dark shadow-none">REGISTER</button>
+                        <button name="user_register" type="submit" class="btn btn-dark shadow-none">REGISTER</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script> 
+</script>
+<?php
+require_once('./debug/logger.php');
+require_once('./controller/auth.php');
+require_once('././admin/inc/essentials.php');
+if (isset($_POST['user_register'])) {
+
+    $auth = new AuthController();
+    $name = $_POST['user_name'];
+    $email = $_POST['user_email'];
+    $password = $_POST['user_password'];
+    $confirm_password = $_POST['user_confirm_password'];
+    $phone = $_POST['user_phone'];
+    $picture = $_FILES['user_picture'];
+    $dob = $_POST['user_dob'];
+    $address = $_POST['user_address'];
+    if ($password != $confirm_password) {
+        return alert('error', 'Password and Confirm Password must be same');
+    }
+    // check dob is valid or not by if more than curent date or empty
+    if (empty($dob) || $dob > date('Y-m-d')) {
+        return alert('error', 'Invalid Date of Birth');
+    }
+
+    $res = $auth->register($name, $email, $password, $phone, $picture, $dob, $address);
+    $json = json_decode($res, true);
+    logger($res);
+    // log to terminal
+    return alert($json['success'], $json['message']);
+
+}
+
+?>

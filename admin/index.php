@@ -63,6 +63,7 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
             $row = mysqli_fetch_assoc($res);
             $_SESSION['adminLogin'] = true;
             $_SESSION['adminId'] = $row['sr_no'];
+            $_COOKIE['adminId'] = $row['sr_no'];
             redirect('dashboard.php');
         } else {
             alert('error', 'Login failed - Invalid Credentials!');
