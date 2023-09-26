@@ -1,7 +1,7 @@
 <nav class=" navbar navbar-expand-lg navbar-light bg-white px-lg-3 py-lg-2 shadow-sm sticky-top">
     <div class="container-fluid ">
-        <a class="navbar-brand me-5" href="index.php">
-            <img width=20% src="../images/logo.png" alt="">
+        <a class="navbar-brand me-5" href="index">
+            <img width=20% src="../assets/images/logo.png" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,16 +10,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="dashboard.php">Dashboard</a>
+                    <a class="nav-link" href="dashboard">Dashboard</a>
                 </li>
                 <li class="nav-item me-2">
                     <a class="nav-link" href="#">Users</a>
                 </li>
                 <li class="nav-item me-2">
-                    <a class="nav-link" href="facilities.php">Fasilitas</a>
+                    <a class="nav-link" href="facilities">Fasilitas</a>
                 </li>
                 <li class="nav-item me-2">
-                    <a class="nav-link" href="ketentuan.php">Ketentuan</a>
+                    <a class="nav-link" href="ketentuan">Ketentuan</a>
                 </li>
                 <li class="nav-item dropdown me-2">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -27,14 +27,14 @@
                         Reservasi
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="rooms.php">Rooms</a></li>
-                        <li><a class="dropdown-item" href="pktLDK.php">Paket LDK</a></li>
-                        <li><a class="dropdown-item" href="pktPerusahaan.php">Paket Perusahaan</a></li>
-                        <li><a class="dropdown-item" href="pktCamp.php">Paket Camp</a></li>
+                        <li><a class="dropdown-item" href="rooms">Rooms</a></li>
+                        <li><a class="dropdown-item" href="pktLDK">Paket LDK</a></li>
+                        <li><a class="dropdown-item" href="pktPerusahaan">Paket Perusahaan</a></li>
+                        <li><a class="dropdown-item" href="pktCamp">Paket Camp</a></li>
                     </ul>
                 </li>
                 <li class="nav-item me-5">
-                    <a href="logout.php" class="btn btn-dark btn-sm">LOGOUT</a>
+                    <a href="logout" class="btn btn-dark btn-sm">LOGOUT</a>
                 </li>
             </ul>
         </div>

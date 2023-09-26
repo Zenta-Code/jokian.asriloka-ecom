@@ -1,5 +1,5 @@
 <?php
-require('inc/essentials.php');
+require './../lib/essentials.php';
 adminLogin();
 ?>
 
@@ -25,11 +25,11 @@ adminLogin();
 
     <div class="container-fluid " id=main-content>
         <div class="row">
-            <div class="col-lg-12 ms-auto p-4 overflow-hidden">
+            <!-- <div class="col-lg-12 ms-auto p-4 overflow-hidden">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti reiciendis tempora repellat ratione
                 culpa a quas dolorum! Ex, est pariatur voluptatem rerum sit accusantium explicabo totam ipsum, ipsa eum
                 quisquam!
-            </div>
+            </div> -->
 
             <div class="col-md-12">
                 <div class="card">
@@ -41,31 +41,68 @@ adminLogin();
                                     <th class="text-center">Nama</th>
                                     <th class="text-center">Kategori</th>
                                     <th class="text-center">ID</th>
-                                    <th class="text-center">Paket</th>
-                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Check In</th>
+                                    <th class="text-center">Check Out</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">Mulyono</td>
-                                    <td class="text-center">Penginapan</td>
-                                    <td class="text-center">2366029260</td>
-                                    <td class="text-center">Graha Dewi Lt 1</td>
-                                    <td class="text-center">Booked <i class="bi bi-check-circle-fill">
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#viewModal">
-                                            View
-                                        </button>
-                                        <button type="button" class="btn btn-success" data-bs-toggle=""
-                                            data-bs-target="#">
-                                            <i class="bi bi-check2-square"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <?php
+                                $sql = "SELECT * FROM booking";
+                                $res = mysqli_query($conn, $sql);
+                                while ($row = mysqli_fetch_assoc($res)) {
+                                    $booking[] = $row;
+                                }
+
+                                foreach ($booking as $key => $value) {
+                                    $sql = "SELECT * FROM room WHERE id = ?";
+                                    $res = select($sql, [$value['roomId']], 'i');
+                                    while ($row = mysqli_fetch_assoc($res)) {
+                                        $room[] = $row;
+                                    }
+                                }
+
+                                foreach ($booking as $key => $value) {
+                                    $sql = "SELECT * FROM user WHERE id = ?";
+                                    $res = select($sql, [$value['userId']], 'i');
+                                    while ($row = mysqli_fetch_assoc($res)) {
+                                        $user[] = $row;
+                                    }
+                                }
+
+                                $html = '';
+                                foreach ($booking as $key => $value) {
+                                    $html .= "<tr>";
+                                    $html .= "<th scope='row'>$key</th>";
+                                    $html .= "<td class='text-center'>";
+                                    foreach ($user as $k => $v) {
+                                        if ($v['id'] == $value['userId']) {
+                                            $html .= "$v[name]";
+                                            break;
+                                        }
+                                    }
+                                    $html .= "</td>";
+                                    $html .= "<td class='text-center'>";
+                                    foreach ($room as $k => $v) {
+                                        if ($v['id'] == $value['roomId']) {
+                                            $html .= "$v[name]";
+                                        }
+                                    }
+                                    $html .= "</td>";
+                                    $html .= "<td class='text-center'>$value[id]</td>";
+                                    $html .= "<td class='text-center'>$value[checkIn]</td>";
+                                    $html .= "<td class='text-center'>$value[checkOut]</td>";
+
+                                    $html .= "<td class='text-center'>";
+                                    $html .= "<button type='button' class='btn btn-primary' data-bs-toggle='modal' 
+                                    data-bs-id = '$value[id]'
+                                    data-bs-target='#viewModal'>View</button>";
+                                    $html .= "<button type='button' class='btn btn-success' data-bs-toggle='' data-bs-target='#'><i class='bi bi-check2-square'></i></button>";
+                                    $html .= "</td>";
+                                    $html .= "</tr>";
+                                }
+                                echo $html;
+                                ?>
 
                             </tbody>
                         </table>
@@ -85,56 +122,38 @@ adminLogin();
 
                             <table>
                                 <tbody>
-                                    <tr>
-                                        <td><b>NAMA</b></td>
-                                        <td>:</td>
-                                        <td>Mulyono</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>NIK</b></td>
-                                        <td>:</td>
-                                        <td>351582929220</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>NO TLP</b></td>
-                                        <td>:</td>
-                                        <td>089773666262</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>KATEGORI</b></td>
-                                        <td>:</td>
-                                        <td>Penginapan</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>ID</b></td>
-                                        <td>:</td>
-                                        <td>123322</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>PAKET</b></td>
-                                        <td>:</td>
-                                        <td>Graha Dewi Lt 1</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>STATUS</b></td>
-                                        <td>:</td>
-                                        <td>Booked</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>CHECK-IN</b></td>
-                                        <td>:</td>
-                                        <td>27/11/23</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>KUANTITAS</b></td>
-                                        <td>:</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>TOTAL</b></td>
-                                        <td>:</td>
-                                        <td>RP 700.000</td>
-                                    </tr>
+                                    <?php
+
+                                    $html = '';
+                                    foreach ($booking as $key => $value) {
+                                        $html .= "<tr>";
+                                        $html .= "<th scope='row'>$key</th>";
+                                        $html .= "<td class='text-center'>";
+                                        foreach ($user as $k => $v) {
+                                            if ($v['id'] == $value['userId']) {
+                                                $html .= "$v[name]";
+                                            }
+                                        }
+                                        $html .= "</td>";
+                                        $html .= "<td class='text-center'>";
+                                        foreach ($room as $k => $v) {
+                                            if ($v['id'] == $value['roomId']) {
+                                                $html .= "$v[name]";
+                                            }
+                                        }
+                                        $html .= "</td>";
+                                        $html .= "<td class='text-center'>$value[id]</td>";
+                                        $html .= "<td class='text-center'>$value[checkIn]</td>";
+                                        $html .= "<td class='text-center'>$value[checkOut]</td>";
+
+                                        $html .= "<td class='text-center'>";
+                                        $html .= "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#viewModal'>View</button>";
+                                        $html .= "<button type='button' class='btn btn-success' data-bs-toggle='' data-bs-target='#'><i class='bi bi-check2-square'></i></button>";
+                                        $html .= "</td>";
+                                        $html .= "</tr>";
+                                    }
+                                    echo $html;
+                                    ?>
                                 </tbody>
                             </table>
 

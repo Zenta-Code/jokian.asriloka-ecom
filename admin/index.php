@@ -1,7 +1,10 @@
 <?php
-require('inc/essentials.php');
-require('inc/db_config.php');
+// require('./../inc/essentials.php');
+require '../lib/controller/auth.php';
+include '../lib/db.php';
 
+require '../lib/essentials.php';
+// require('inc/db_config.php'); 
 session_start();
 if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
     redirect('dashboard.php');
@@ -26,7 +29,9 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
         }
 
         .bg-asr {
-            background-color: #445f3a;
+            /* background-color: #445f3a; */
+            border: 2px solid #445f3a;
+            border-radius: 10px 10px 0 0;
         }
     </style>
 </head>
@@ -35,16 +40,16 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
     <div class="login-form text-center rounded bg-white shadow overflow-hidden">
         <form method="POST">
             <h4 class="bg-asr text-white py-3">
-                <img src="../images/logo-asriloka.png" width="200px">
+                <img src="../assets/images/logo.png" width="200px">
             </h4>
             <div class="p-4">
                 <div class="mb-3">
-                    <input name="admin_name" required type="text" class="form-control shadow-none text-center"
-                        placeholder="Admin name">
+                    <input id="password" name="email" required type="text" class="form-control shadow-none text-center"
+                        placeholder="Admin Email">
                 </div>
                 <div class="mb-4">
-                    <input name="admin_pass" required type="password" class="form-control shadow-none text-center"
-                        placeholder="Password">
+                    <input id="password" name="password" required type="password"
+                        class="form-control shadow-none text-center" placeholder="Password">
                 </div>
                 <button name="login" type="submit" class="btn text-white custom-bg shadow-none">LOGIN</button>
             </div>
@@ -52,21 +57,16 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
     </div>
 
     <?php
+    // require('./../inc/controller/auth.php');
+    $auth = new AuthController();
     if (isset($_POST['login'])) {
-        $frm_data = filteration($_POST);
+        $res = $auth->login($_POST);
+        $json = json_decode($res, true);
 
-        $query = "SELECT * FROM admin_cred WHERE admin_name=? AND admin_pass=?";
-        $values = [$frm_data['admin_name'], $frm_data['admin_pass']];
-
-        $res = select($query, $values, "ss");
-        if ($res->num_rows == 1) {
-            $row = mysqli_fetch_assoc($res);
-            $_SESSION['adminLogin'] = true;
-            $_SESSION['adminId'] = $row['sr_no'];
-            $_COOKIE['adminId'] = $row['sr_no'];
-            redirect('dashboard.php');
+        if ($json['success']) {
+            redirect('dashboard');
         } else {
-            alert('error', 'Login failed - Invalid Credentials!');
+            alert('error', $json['message']);
         }
     }
     ?>

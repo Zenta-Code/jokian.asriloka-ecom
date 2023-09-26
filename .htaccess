@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /aw/
+RewriteRule ^([^.]+)$ $1.php [NC,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteRule . /aw/index.php [L]

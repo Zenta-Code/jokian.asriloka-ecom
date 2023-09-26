@@ -23,7 +23,7 @@
 
                 <!-- Form Panel -->
                 <div class="col-md-4">
-                    <form action="" id="manage-category">
+                    <form action="" id="tambahBundlingLDK">
                         <div class="card">
                             <div class="card-header">
                                 Penginapan
@@ -33,26 +33,33 @@
                                 <div class="form-group">
                                     <label class="control-label">Ketersediaan</label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">No / Ready</label>
+                                        <label class="form-check-label" for="isReady">No / Ready</label>
+                                        <input class="form-check-input" type="checkbox" name="isReady" id="isReady">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Paket</label>
-                                    <input type="text" class="form-control" name="name">
+                                    <input type="text" class="form-control" name="bundling_name" id="bundling_name">
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Harga</label>
-                                    <input type="number" class="form-control text-right" name="harga">
+                                    <input type="number" class="form-control text-right" name="bundling_price"
+                                        name="bundling_price">
                                 </div>
+                                <label class="control-label">Fasilitas</label>
+                                <div class="form-check" id="bundling_facility">
+                                    <!-- Add content for Fasilitas -->
+                                </div> <label class="control-label">Ketentuan</label>
+                                <div class="form-check" id="bundling_rule">
+                                    <!-- Add content for Ketentuan -->
+                                </div>
+
                                 <div class="form-group">
                                     <label for="" class="control-label">Gambar</label>
-                                    <input type="file" class="form-control" name="gambar" onchange="">
+                                    <input type="file" class="form-control" name="bundling_gambar" id="bundling_gambar"
+                                        onchange="">
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label">Ketentuan</label>
-                                    <textarea class="form-control" rows="3" name="ketentuan"></textarea>
-                                </div>
+
                             </div>
 
                             <div class="card-footer">
@@ -81,42 +88,114 @@
                                         <th class="text-center">Gambar</th>
                                         <th class="text-center">Harga</th>
                                         <th class="text-center">Ketentuan</th>
+                                        <th class="text-center">Fasilitas</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center"><i class="bi bi-check-circle-fill"></i></td>
-                                        <td class="text-center">
-                                            Paket A - Gathering (No Trainer)
-                                        </td>
+                                <tbody id="bundling_table">
 
-                                        <td class="text-center">
-                                            <img src="../images/slide2.jpg" width="100px" id="cimg">
-                                        </td>
-                                        <td class="text-center">
-                                            <p><b>Rp 75.000</b></p>
-                                        </td>
-                                        <td>
-                                            <ul>
-                                                <li>Minimal 30 Orang</li>
-                                                <li>Durasi 7 jam</li>
-                                                <li>Program Training Indoor & Outdoor/Workshop/Gathering</li>
-                                                <li>1x Makan, 1x Snack, Minuman Khas Asriloka</li>
-                                                <li>Fasilitas Indoor & Outdoor</li>
-                                                <li>Sound System Standart</li>
-                                            </ul>
-                                        </td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-primary edit_cat" type="button" data-id=""
-                                                data-name="" data-price="" data-cover_img="">Edit</button> <br>
-                                            <button class="btn btn-sm btn-danger delete_cat" type="button"
-                                                data-id="">Delete</button>
-                                        </td>
-                                    </tr>
 
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Edit Fasilitas -->
+                <div class="modal fade" id="staticBackdropBundlingEdit" data-bs-backdrop="static"
+                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Bundling</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" id="editBundling" enctype="multipart/form-data">
+                                    <div class="card">
+
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Ketersediaan</label>
+                                                <div class="form-check form-switch" id="edit_isReady>
+                                                    <label class=" form-check-label" for="edit_isReady">No /
+                                                    Ready</label>
+                                                    <input class="form-check-input" type="checkbox" name="edit_isReady"
+                                                        id="edit_isReady">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Nama</label>
+                                                <input type="text" class="form-control" name="edit_nama" id="edit_nama"
+                                                    required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Harga</label>
+                                                <input type="number" class="form-control text-right" name="edit_price"
+                                                    id="edit_price">
+                                            </div>
+                                            <label class="control-label">Fasilitas</label>
+                                            <div class="form-check" id="edit_room_facility">
+                                                <!-- Add content for Fasilitas -->
+                                            </div>
+
+                                            <label class="control-label">Ketentuan</label>
+                                            <div class="form-check" id="edit_room_rule">
+                                                <!-- Add content for Ketentuan -->
+                                            </div>
+                                            <div class="form-group" id="edit_gambar">
+                                                <label for="edit_image" class="control-label">Gambar</label>
+                                                <input type="file" class="form-control" name="edit_image"
+                                                    id="edit_image">
+                                            </div>
+                                            <input type="hidden" id="edit_id" name="edit_id"></input>
+                                        </div>
+
+                                        <div class="card-footer">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-sm btn-primary col-sm-3 offset-md-3"
+                                                        name="add_room" data-bs-dismiss="modal" type="submit">
+                                                        Save</button>
+                                                    <button class="btn btn-sm btn-default col-sm-3" type="button"
+                                                        data-bs-dismiss="modal"
+                                                        onclick="$('#manage-category').get(0).reset()"> Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Hapus Fasilitas -->
+                <div class="modal fade" id="staticBackdropBundlingHapus" data-bs-backdrop="static"
+                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Hapus Fasilitas</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form method="POST" id="hapusBundling">
+                                <div class="modal-body">
+                                    Apa anda yakin menghapus fasilitas
+                                    <div>
+                                        <span id="hapus_nama"></span> ?
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                                    <input type="hidden" id="hapus_id" name="hapus_id"></input>
+                                    <button type="submit" name="hapus" data-bs-dismiss="modal"
+                                        class="btn btn-danger">Hapus</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -126,6 +205,8 @@
             </div>
         </div>
     </div>
+    <?php require('inc/scripts.php'); ?>
+    <script src="../assets/js/bundlingLDK.js"></script>
 
 </body>
 

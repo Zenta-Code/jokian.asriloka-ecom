@@ -1,5 +1,5 @@
 <?php
-require('inc/essentials.php');
+require_once './../lib/essentials.php';
 adminLogin();
 ?>
 
@@ -250,9 +250,9 @@ adminLogin();
             xhr.onload = function () {
                 contacts_data = JSON.parse(this.responseText);
                 contacts_data = Object.values(contacts_data);
-                
-                for(i=0; i<contacts_p_id.length;i++){
-                    document.getElementById(contacts_p_id[i]).innerText =contacts_data[i+1];
+
+                for (i = 0; i < contacts_p_id.length; i++) {
+                    document.getElementById(contacts_p_id[i]).innerText = contacts_data[i + 1];
                 }
             }
 

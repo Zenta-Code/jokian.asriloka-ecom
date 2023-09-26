@@ -24,11 +24,11 @@
 
     <div class="my-5 px-4">
         <h2 class="fw-bold h-font text-center">Data Fasilitas</h2>
-        <p class="text-center mt-3">
+        <!-- <p class="text-center mt-3">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus odit architecto sunt ratione
             voluptate, fugit maxime odio animi asperiores deserunt harum, ipsam molestiae fuga numquam tenetur et labore
             aspernatur? Quas?
-        </p>
+        </p> -->
     </div>
 
     <div class="container-fluid">
@@ -45,7 +45,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body">
-                            <form method="POST" action="" enctype="multipart/form-data">
+                            <form method="POST" id="tambahFasilitasUmum" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="nama_fasilitas">Nama Fasilitas</label>
                                     <input type="text" class="form-control" id="nama_fasilitas" name="nama_fasilitas"
@@ -53,18 +53,24 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="gambar_fasilitas">Gambar</label>
-                                    <input type="file" class="form-control" name="img" id="gambar" required>
+                                    <input type="file" class="form-control" name="gambar_fasilitas"
+                                        id="gambar_fasilitas" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="deskripsi">Deskripsi</label>
-                                    <textarea class="form-control" id="deskripsi" name="deskripsi" required></textarea>
+                                    <textarea class="form-control" id="deskripsi_fasilitas" name="deskripsi_fasilitas"
+                                        required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button id="add_fasilitas" type="submit" class="btn btn-primary"
+                                        data-bs-dismiss="modal">Save
+                                        changes</button>
                                 </div>
                             </form>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -83,33 +89,17 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Gambar</th>
+                                <th class='w-25'>Gambar</th>
                                 <th>Nama Fasilitas</th>
                                 <th>Deskripsi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td><img src="../images/internet.png" width="30px" alt=""></td>
-                                <td>Wifi</td>
-                                <td>Password bisa ditanyakn di loket</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdropEdit">
-                                        Edit
-                                    </button>
+                        <tbody id="fasilitasTable">
 
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdropHapus">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
 
                             <!-- Modal Edit Fasilitas -->
-                            <div class="modal fade" id="staticBackdropEdit" data-bs-backdrop="static"
+                            <div class="modal fade" id="staticBackdropFasilitasEdit" data-bs-backdrop="static"
                                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog">
@@ -120,28 +110,26 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="" method="POST">
-                                                <input type="hidden" name="id" value="">
+                                            <form method="POST" id="editFasilitasUmum">
+                                                <input type="hidden" name="edit_id" id="edit_id">
 
                                                 <div class="form-group">
-                                                    <label for="nama_fasilitas">Nama Fasilitas</label>
-                                                    <input type="text" class="form-control" id="nama_fasilitas"
-                                                        name="nama_fasilitas" value="" required>
+                                                    <label for="edit_nama">Nama Fasilitas</label>
+                                                    <input type="text" class="form-control" id="edit_nama"
+                                                        name="edit_nama" required>
                                                 </div>
-
                                                 <div class="form-group">
-                                                    <label for="gambar_fasilitas">Gambar</label>
-                                                    <input type="file" class="form-control" name="img" id="gambar"
-                                                        required>
+                                                    <label for="edit_gambar">Gambar</label>
+                                                    <input type="file" class="form-control" name="edit_gambar"
+                                                        id="edit_gambar" required>
                                                 </div>
-
                                                 <div class="form-group">
-                                                    <label for="deskripsi">Deskripsi</label>
-                                                    <textarea class="form-control" id="deskripsi" name="deskripsi"
-                                                        required> </textarea>
+                                                    <label for="edit_description">Deskripsi</label>
+                                                    <textarea class="form-control" id="edit_description"
+                                                        name="edit_description" required></textarea>
                                                 </div>
 
-                                                <button type="submit" name="edit"
+                                                <button type="submit" name="edit" data-bs-dismiss="modal"
                                                     class="btn btn-primary w-100 mt-1">Simpan</button>
                                             </form>
                                         </div>
@@ -150,7 +138,7 @@
                             </div>
 
                             <!-- Modal Hapus Fasilitas -->
-                            <div class="modal fade" id="staticBackdropHapus" data-bs-backdrop="static"
+                            <div class="modal fade" id="staticBackdropFasilitasHapus" data-bs-backdrop="static"
                                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog">
@@ -160,17 +148,22 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            Apa anda yakin menghapus fasilitas ... ?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button"
-                                                data-dismiss="modal">Batal</button>
-                                            <form action="" method="post">
-                                                <input type="hidden" name="id" value="">
-                                                <button type="submit" name="hapus" class="btn btn-danger">Hapus</button>
-                                            </form>
-                                        </div>
+                                        <form method="POST" id="hapusFasilitasUmum">
+                                            <div class="modal-body">
+                                                Apa anda yakin menghapus fasilitas
+                                                <div>
+                                                    <span id="hapus_nama"></span> ?
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" type="button"
+                                                    data-dismiss="modal">Batal</button>
+                                                <input type="hidden" id="hapus_id" name="hapus_id"></input>
+                                                <button type="submit" name="hapus" data-bs-dismiss="modal"
+                                                    class="btn btn-danger">Hapus</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +176,9 @@
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <?php require('inc/scripts.php'); ?>
+    <script src="../assets/js/fasilitas.js"></script>
+
 </body>
 
 </html>
