@@ -7,6 +7,7 @@ $("#form_pembayaran").on("submit", function (e) {
     url: "admin/ajax/payment.php?action=pembayaran",
     type: "POST",
     data: $(this).serialize(),
+    caches: false,
     success: function (response) {
       var data = JSON.parse(response);
       var type_bundling = "room";
