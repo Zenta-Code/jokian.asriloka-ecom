@@ -56,15 +56,15 @@
         <div class="row">
             <div class="col-lg-12 bg-white shadow p-4 rounded">
                 <h5 class="mb-4">Check Booking Availability</h5>
-                <form>
+                <form action="rooms" method="POST">`;
                     <div class="row align-items-end">
                         <div class="col-lg-5 mb-3">
-                            <label class="form-label" style="font-weight: 500">Check-in</label>
-                            <input type="date" class="form-control shadow-none">
+                            <label for="check_in" class="form-label" style="font-weight: 500">Check-in</label>
+                            <input type="date" class="form-control shadow-none" id="check_in" name="check_in">
                         </div>
                         <div class="col-lg-5 mb-3">
-                            <label class="form-label" style="font-weight: 500">Check-out</label>
-                            <input type="date" class="form-control shadow-none">
+                            <label for="check_out" class="form-label" style="font-weight: 500">Check-out</label>
+                            <input type="date" class="form-control shadow-none" id="check_out" name="check_out">
                         </div>
 
                         <div class="col-lg-2 mb-lg-3 mt-2">
@@ -177,13 +177,7 @@
                 $html .= '</div>';
                 $html .= '</div>';
                 echo $html;
-
-
             }
-
-
-
-
             ?>
 
         </div>

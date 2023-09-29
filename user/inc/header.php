@@ -24,6 +24,16 @@ if (isset($_POST['user_login'])) {
     $res = $auth->login($_POST);
     $json = json_decode($res, true);
     echo alert($json['success'], $json['message']);
+
+    // redirect to with delay   
+    if ($json['success'] == true && $json['data']['role'] == 'ADMIN') {
+        echo "<script>
+        setTimeout(function(){
+            window.location.href='admin/dashboard';
+        }, 1000);
+        </script>";
+    }
+
 }
 
 ?>

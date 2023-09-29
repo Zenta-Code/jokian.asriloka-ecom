@@ -15,15 +15,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $hari = (strtotime($check_out) - strtotime($check_in)) / 86400;
 
     $conn = $GLOBALS['conn'];
-
     $sql = "SELECT * FROM user WHERE id = $user";
     $res = mysqli_query($conn, $sql);
     $user = mysqli_fetch_assoc($res);
     unset($user['password']);
-
+    // if ($data['type'] != '') {
+    //     $sql = "SELECT * FROM bundling WHERE id = $room";
+    //     $res = mysqli_query($conn, $sql);
+    //     $room = mysqli_fetch_assoc($res);
+    //     $sql = "SELECT * FROM booking WHERE roomId = $room[id]";
+    //     $res = mysqli_query($conn, $sql);
+    //     $bookings = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    // } else {
+    //     $sql = "SELECT * FROM booking WHERE roomId = $room";
+    //     $res = mysqli_query($conn, $sql);
+    //     $bookings = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    // }
     $sql = "SELECT * FROM booking WHERE roomId = $room";
     $res = mysqli_query($conn, $sql);
     $bookings = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
     if ($check_in > $check_out) {
         echo json_encode([
             'status' => 'failed',
@@ -64,9 +75,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
         }
     }
 
-    $sql = "SELECT * FROM room WHERE id = $room";
-    $res = mysqli_query($conn, $sql);
-    $room = mysqli_fetch_assoc($res);
+    if ($data['type'] != '') {
+        $sql = "SELECT * FROM bundling WHERE id = $room";
+        $res = mysqli_query($conn, $sql);
+        $room = mysqli_fetch_assoc($res);
+    } else {
+        $sql = "SELECT * FROM room WHERE id = $room";
+        $res = mysqli_query($conn, $sql);
+        $room = mysqli_fetch_assoc($res);
+    }
+
+
 
     $total_price = $room['price'] * $hari;
     $total_price = $total_price + ($total_price * 0.1);
@@ -116,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $res = mysqli_query($conn, $sql);
     $booking = mysqli_fetch_assoc($res);
 
-    // redirect to invoice with brings all the data
+
     header("Location: ./../../user/invoice.php?booking_id=$booking[id]&user_id=$user[id]&room_id=$room[id]&check_in=$check_in&check_out=$check_out&message=$message&class=$class");
 
 }

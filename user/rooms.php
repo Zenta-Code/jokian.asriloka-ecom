@@ -32,24 +32,36 @@
                             aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse flex-column align-items-stretch mt-2" id="filterDropdown">
-                            <div class="border bg-light p-3 rounded mb-3">
-                                <h5 class="mb-3" style="font-size: 18px;">Check Availability</h5>
-                                <label class="form-label">Check-in</label>
-                                <input type="date" class="form-control shadow-none">
-                                <label class="form-label">Check-out</label>
-                                <input type="date" class="form-control shadow-none">
+                        <form action="rooms" method="POST">
+                            <div class="collapse navbar-collapse flex-column align-items-stretch mt-2"
+                                id="filterDropdown">
+                                <div class="border bg-light p-3 rounded mb-3">
+                                    <h5 class="mb-3" style="font-size: 18px;">Check Availability</h5>
+                                    <label for="check_in" class="form-label">Check-in</label> <input type="date"
+                                        class="form-control shadow-none" id="check_in" name="check_in">
+                                    <label for="check_out" class="form-label">Check-out</label>
+                                    <input type="date" class="form-control shadow-none" id="check_out" name="check_out">
+                                </div>
                             </div>
-                        </div>
-                        <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none">Check Availability</a>
+
+                            <button type="submit" class="btn btn-sm w-100 btn-outline-dark shadow-none">Check
+                                Availability</button>
+                        </form>
                     </div>
                 </nav>
             </div>
-
             <div class="col-lg-9 col-md-12 px-4">
-                <!-- Graha Dewi Kunti Lt 1 -->
                 <?php
+
+
                 $sql = "SELECT * FROM room";
+
+                if (isset($_POST['check_in']) && isset($_POST['check_out'])) {
+                    $check_in = $_POST['check_in'];
+                    $check_out = $_POST['check_out'];
+                    $sql = "SELECT * FROM room WHERE id NOT IN (SELECT roomId FROM booking WHERE checkIn BETWEEN '$check_in' AND '$check_out' OR checkOut BETWEEN '$check_in' AND '$check_out')";
+                }
+
                 $res = mysqli_query($conn, $sql);
                 $room = [];
                 while ($row = mysqli_fetch_assoc($res)) {
@@ -78,7 +90,6 @@
                 }
 
                 foreach ($room as $key => $value) {
-                    // echo  name ,price, facility, picture as html
                     $html = "<div class='card mb-4 border-0 shadow'>";
                     $html .= "<div class='row g-0 p-3 align-items-center'>";
                     $html .= "<div class='col-md-5 mb-lg-0 mb-md-0 mb-3'>";

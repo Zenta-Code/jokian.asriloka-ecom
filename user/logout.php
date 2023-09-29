@@ -1,5 +1,7 @@
 <?php
 session_destroy();
-header('location: /index');
+// header('location: /index');
+require './lib/essentials.php';
+redirect('index');
 
 ?>

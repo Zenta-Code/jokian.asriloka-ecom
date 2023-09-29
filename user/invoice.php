@@ -135,7 +135,6 @@ $conn = $GLOBALS['conn'];
         </div>
         <div class="mt-4">
             <button id="generatePdfButton" class="btn btn-primary">Print</button>
-
         </div>
     </div>
 

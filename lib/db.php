@@ -79,9 +79,6 @@ function filteration($data)
 function select($sql, $values, $datatypes)
 {
     $conn = $GLOBALS['conn'];
-    $token = $_COOKIE['token'];
-
-    // $auth = json_decode(TokenController::verify($token, 'ADMIN'), true);
     $auth['success'] = true;
 
     if ($auth['success']) {

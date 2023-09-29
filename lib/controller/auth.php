@@ -22,7 +22,7 @@ class AuthController
                     setcookie('token', $res['token'], time() + (86400 * 30), "/");
                     $_SESSION['token'] = $res['token'];
                     $_SESSION['data'] = $row;
-                    return json_encode(["success" => true, "message" => "Login Successful"]);
+                    return json_encode(["success" => true, "message" => "Login Successful", "data" => $row]);
                 } else {
                     return json_encode(["success" => false, "message" => "Token Generation Failed"]);
                 }

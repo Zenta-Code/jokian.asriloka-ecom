@@ -95,8 +95,7 @@
                     $html .= "</div>";
                     $html .= "<div class='col-md-3 text-center'>";
                     $html .= "<h6 class='mb-4'>Rp $value[price]/malam</h6>";
-                    $html .= "<a href='#' class='btn btn-sm w-100 text-white custom-bg shadow-none mb-2'>Book Now</a>";
-                    $html .= "<a href='details.php' class='btn btn-sm w-100 btn-outline-dark shadow-none'>More Details</a>";
+                    $html .= "<a href='details?type=paketLDK&id=$value[id]' class='btn btn-sm text-white custom-bg shadow-none'>Book Now</a>";
                     $html .= "</div>";
                     $html .= "</div>";
                     $html .= "</div>";
