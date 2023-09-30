@@ -26,7 +26,7 @@ $(document).ready(function () {
       },
     });
   }
-  loadKetentuanData();
+  // loadKetentuanData();
   function loadFasilitasData() {
     $.ajax({
       url: "ajax/fasilitas.php?action=loadUmum",

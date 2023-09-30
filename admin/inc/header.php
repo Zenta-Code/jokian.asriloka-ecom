@@ -1,6 +1,6 @@
 <nav class=" navbar navbar-expand-lg navbar-light bg-white px-lg-3 py-lg-2 shadow-sm sticky-top">
     <div class="container-fluid ">
-        <a class="navbar-brand me-5" href="index">
+        <a class="navbar-brand me-5" href="dashboard">
             <img width=20% src="../assets/images/logo.png" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"

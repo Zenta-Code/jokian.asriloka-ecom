@@ -3,6 +3,7 @@ class TokenController
 {
     public static function generate(string $email, string $name)
     {
+        $user = new User();
         $check = "SELECT * FROM user WHERE email = ?";
         $res = select($check, [$email], 's');
         if (mysqli_num_rows($res) > 0) {

@@ -6,11 +6,11 @@ function adminLogin()
     session_start();
     if (!(isset($_SESSION['data']['role']) && $_SESSION['data']['role'] == "ADMIN")) {
         $token = $_COOKIE['token'];
-        $tokenConn = new TokenController();
-        $res = json_decode($tokenConn->verify($token, 'ADMIN'), true);
-        if (!$res['success']) {
-            redirect('../index.php');
-        }
+        // $tokenConn = new TokenController();
+        // $res = json_decode($tokenConn->verify($token, 'ADMIN'), true);
+        // if (!$res['success']) {
+        //     redirect('../index.php');
+        // }
     }
 }
 

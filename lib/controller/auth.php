@@ -1,17 +1,25 @@
 <?php
 // require('././inc/db.php');
-// require '../../lib/db.php';
+// require '../../lib/db.php'; 
 class AuthController
 {
+    private $db;
+
+    public function __construct()
+    {
+        $this->db = new Database;
+    }
+
+
     public function login($data)
     {
-        $data = filteration($data);
-        $find = "SELECT * FROM user WHERE email =?";
-        $res = select($find, [$data['email']], 's');
+        $q = 'SELECT * FROM user WHERE email = ?';
+        $this->db->query($q);
+        $this->db->bind(1, $data['email']);
+        $res = $this->db->resultSet();
 
-
-        if (mysqli_num_rows($res) > 0) {
-            $row = mysqli_fetch_assoc($res);
+        if (count($res) > 0) {
+            $row = $res[0];
             $hash = $row['password'];
             if (password_verify($data['password'], $hash)) {
                 unset($row['password']);
@@ -33,57 +41,53 @@ class AuthController
             return json_encode(["success" => false, "message" => "Invalid Email"]);
         }
     }
-    public function logout()
-    {
-        session_destroy();
-        header('location: ../index.php');
-    }
-
 
     public function register($data, $picture)
     {
 
-        $find = "SELECT * FROM user WHERE email = ?";
-        $res = select($find, [$data['email']], 's');
+        $q = 'SELECT * FROM user WHERE email = ?';
+        $this->db->query($q);
+        $this->db->bind(1, $data['email']);
+        $res = $this->db->resultSet();
 
-        if (mysqli_num_rows($res) > 0) {
-            return json_encode(["success" => false, "message" => "Email already exists"]);
-        }
-
-        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
-
-        $picture_name = null;
-        if (!empty($picture['name']) || $picture['name'] != '') {
-            $ext = strtolower(pathinfo($picture['name'], PATHINFO_EXTENSION));
-            $prob_ext = ['jpg', 'jpeg', 'png'];
-
-            if (in_array($ext, $prob_ext)) {
-                $picture_name = time() . "-" . uniqid() . ".$ext";
-                $target_path = "./assets/images/user/$picture_name";
-
-                if (!move_uploaded_file($picture['tmp_name'], $target_path)) {
-                    return json_encode(["success" => false, "message" => "Failed to upload image"]);
-                }
-            } else {
-                return json_encode(["success" => false, "message" => "Invalid Image Format"]);
-            }
-        }
-        $q = "INSERT INTO user (name, email, password, phone, dob, address, picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $res = update($q, [
-            $data['name'],
-            $data['email'],
-            $hash,
-            $data['phone'],
-            $data['dob'],
-            $data['address'],
-            $picture_name
-        ], 'sssssss');
-
-        if ($res) {
-            return json_encode(["success" => true, "message" => "User Registered Successfully"]);
+        if (count($res) > 0) {
+            return json_encode(["success" => false, "message" => "Email Already Registered"]);
         } else {
-            return json_encode(["success" => false, "message" => "User Registration Failed"]);
+            $picture_name = null;
+            if (!empty($picture['name']) || $picture['name'] != '') {
+                $ext = strtolower(pathinfo($picture['name'], PATHINFO_EXTENSION));
+                $prob_ext = ['jpg', 'jpeg', 'png'];
+
+                if (in_array($ext, $prob_ext)) {
+                    $picture_name = time() . "-" . uniqid() . ".$ext";
+                    $target_path = "./assets/images/user/$picture_name";
+
+                    if (!move_uploaded_file($picture['tmp_name'], $target_path)) {
+                        return json_encode(["success" => false, "message" => "Failed to upload image"]);
+                    }
+                } else {
+                    return json_encode(["success" => false, "message" => "Invalid Image Format"]);
+                }
+            }
+
+            $q = 'INSERT INTO user (name, email, password, picture, dob, address, phone) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            $this->db->query($q);
+            $this->db->bind(1, $data['name']);
+            $this->db->bind(2, $data['email']);
+            $this->db->bind(3, password_hash($data['password'], PASSWORD_DEFAULT));
+            $this->db->bind(4, $picture_name);
+            $this->db->bind(5, $data['dob']);
+            $this->db->bind(6, $data['address']);
+            $this->db->bind(7, $data['phone']);
+            $this->db->execute();
+
+            return json_encode(["success" => true, "message" => "Registration Successful"]);
         }
+    }
+    public function logout()
+    {
+        session_destroy();
+        header('location: ../index.php');
     }
 
 }
