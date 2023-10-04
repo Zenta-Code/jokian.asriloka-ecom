@@ -21,66 +21,11 @@
         <div class="col-lg-12">
             <div class="row">
 
-                <!-- Form Panel -->
-                <div class="col-md-4">
-                    <form method="POST" id="tambahKamar" enctype="multipart/form-data">
-                        <div class="card">
-                            <div class="card-header">
-                                Penginapan
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label class="control-label">Ketersediaan</label>
-                                    <div class="form-check form-switch">
-                                        <label class="form-check-label" for="isReady">No / Ready</label>
-                                        <input class="form-check-input" type="checkbox" name="isReady" id="isReady">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Nama</label>
-                                    <input type="text" class="form-control" name="room_name" id="room_name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Harga</label>
-                                    <input type="number" class="form-control text-right" name="room_price">
-                                </div>
-                                <label class="control-label">Fasilitas</label>
-                                <div class="form-check" id="room_facility">
-                                    <!-- Add content for Fasilitas -->
-                                </div>
-                                <label class="control-label">Kapasitas</label>
-                                <div class="form-check" id="room_capacity">
-                                    <!-- Add content for Kapasitas -->
-                                </div>
-                                <label class="control-label">Ketentuan</label>
-                                <div class="form-check" id="room_rule">
-                                    <!-- Add content for Ketentuan -->
-                                </div>
-                                <div class="form-group">
-                                    <label for="room_gambar" class="control-label">Gambar</label>
-                                    <input type="file" class="form-control" name="room_gambar[]" id="room_gambar"
-                                        accept="image/*" multiple>
-                                </div>
-                            </div>
 
-                            <div class="card-footer">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <button class="btn btn-sm btn-primary col-sm-3 offset-md-3" name="add_room"
-                                            type="submit"> Save</button>
-                                        <button class="btn btn-sm btn-default col-sm-3" type="button"
-                                            onclick="$('#manage-category').get(0).reset()"> Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-                </div>
 
 
                 <!-- Table Panel -->
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
                             <table class="table table-bordered table-hover">
@@ -206,8 +151,67 @@
                     </div>
                 </div>
 
-
             </div>
+
+
+            <br>
+                <!-- Form Panel -->
+                <div class="col-md-12">
+                    <form method="POST" id="tambahKamar" enctype="multipart/form-data">
+                        <div class="card">
+                            <div class="card-header">
+                                Penginapan
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="control-label">Ketersediaan</label>
+                                    <div class="form-check form-switch">
+                                        <label class="form-check-label" for="isReady">No / Ready</label>
+                                        <input class="form-check-input" type="checkbox" name="isReady" id="isReady">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Nama</label>
+                                    <input type="text" class="form-control" name="room_name" id="room_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Harga</label>
+                                    <input type="number" class="form-control text-right" name="room_price">
+                                </div>
+                                <label class="control-label">Fasilitas</label>
+                                <div class="form-check" id="room_facility">
+                                    <!-- Add content for Fasilitas -->
+                                </div>
+                                <label class="control-label">Kapasitas</label>
+                                <div class="form-check" id="room_capacity">
+                                    <!-- Add content for Kapasitas -->
+                                </div>
+                                <label class="control-label">Ketentuan</label>
+                                <div class="form-check" id="room_rule">
+                                    <!-- Add content for Ketentuan -->
+                                </div>
+                                <div class="form-group">
+                                    <label for="room_gambar" class="control-label">Gambar</label>
+                                    <input type="file" class="form-control" name="room_gambar[]" id="room_gambar"
+                                        accept="image/*" multiple>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-sm btn-primary col-sm-3 offset-md-3" name="add_room"
+                                            type="submit"> Save</button>
+                                        <button class="btn btn-sm btn-default col-sm-3" type="button"
+                                            onclick="$('#manage-category').get(0).reset()"> Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
         </div>
     </div>
 

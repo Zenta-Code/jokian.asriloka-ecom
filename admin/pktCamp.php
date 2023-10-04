@@ -14,70 +14,16 @@
     <?php require('inc/header.php'); ?>
 
     <div class="my-5 px-4">
-        <h2 class="fw-bold h-font text-center">Paket CAMPS</h2>
+        <h2 class="fw-bold h-font text-center">Paket Camp</h2>
     </div>
 
     <div class="container-fluid">
         <div class="col-lg-12">
             <div class="row">
 
-                <!-- Form Panel -->
-                <div class="col-md-4">
-                    <form action="" id="tambahBundlingCAMP">
-                        <div class="card">
-                            <div class="card-header">
-                                Penginapan
-                            </div>
-                            <div class="card-body">
-                                <input type="hidden" name="id">
-                                <div class="form-group">
-                                    <label class="control-label">Ketersediaan</label>
-                                    <div class="form-check form-switch">
-                                        <label class="form-check-label" for="isReady">No / Ready</label>
-                                        <input class="form-check-input" type="checkbox" name="isReady" id="isReady">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Paket</label>
-                                    <input type="text" class="form-control" name="bundling_name" id="bundling_name">
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Harga</label>
-                                    <input type="number" class="form-control text-right" name="bundling_price"
-                                        name="bundling_price">
-                                </div>
-                                <label class="control-label">Fasilitas</label>
-                                <div class="form-check" id="bundling_facility">
-                                    <!-- Add content for Fasilitas -->
-                                </div> <label class="control-label">Ketentuan</label>
-                                <div class="form-check" id="bundling_rule">
-                                    <!-- Add content for Ketentuan -->
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="" class="control-label">Gambar</label>
-                                    <input type="file" class="form-control" name="bundling_gambar[]"
-                                        id="bundling_gambar" multiple>
-                                </div>
-
-                            </div>
-
-                            <div class="card-footer">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <button class="btn btn-sm btn-primary col-sm-3 offset-md-3"> Save</button>
-                                        <button class="btn btn-sm btn-default col-sm-3" type="button"
-                                            onclick="$('#manage-category').get(0).reset()"> Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
 
                 <!-- Table Panel -->
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
                             <table class="table table-bordered table-hover">
@@ -203,6 +149,62 @@
 
 
             </div>
+
+            <br>
+            <!-- Form Panel -->
+            <form action="" id="tambahBundlingCAMP">
+                <div class="card">
+                    <div class="card-header">
+                        Paket Camp
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" name="id">
+                        <div class="form-group">
+                            <label class="control-label">Ketersediaan</label>
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" for="isReady">No / Ready</label>
+                                <input class="form-check-input" type="checkbox" name="isReady" id="isReady">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Paket</label>
+                            <input type="text" class="form-control" name="bundling_name" id="bundling_name">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Harga</label>
+                            <input type="number" class="form-control text-right" name="bundling_price"
+                                name="bundling_price">
+                        </div>
+                        <label class="control-label">Fasilitas</label>
+                        <div class="form-check" id="bundling_facility">
+                            <!-- Add content for Fasilitas -->
+                        </div> <label class="control-label">Ketentuan</label>
+                        <div class="form-check" id="bundling_rule">
+                            <!-- Add content for Ketentuan -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="control-label">Gambar</label>
+                            <input type="file" class="form-control" name="bundling_gambar[]" id="bundling_gambar"
+                                multiple>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-sm btn-primary col-sm-3 offset-md-3"> Save</button>
+                                <button class="btn btn-sm btn-default col-sm-3" type="button"
+                                    onclick="$('#manage-category').get(0).reset()"> Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+
         </div>
     </div>
     <?php require('inc/scripts.php'); ?>
@@ -292,7 +294,7 @@
                             html += "<div class='carousel slide' data-ride='carousel' id='carousel" + i + "'>";
                             html += "<div class='carousel-inner'>";
                             html += "<div class='carousel-item active'>";
-                            html += "<img class='d-block w-100' src='./../assets/images/room/" + data[i].picture[0].name + "' alt='First slide'>";
+                            html += "<img class='d-block w-100' src='./../assets/images/bundling/" + data[i].picture[0].name + "' alt='First slide'>";
                             html += "</div>";
                             for (var j = 1; j < data[i].picture.length; j++) {
                                 html += "<div class='carousel-item'>";

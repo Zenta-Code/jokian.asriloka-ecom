@@ -44,6 +44,10 @@ adminLogin();
                                     <th class="text-center">Check In</th>
                                     <th class="text-center">Check Out</th>
                                     <th class="text-center">Status</th>
+                                    <th class="text-center">Pembayaran</th>
+                                    <th class="text-center">Total DP</th>
+                                    <th class="text-center">Total Harga</th>
+                                    <th class="text-center">Sisa Pembayaran</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -108,8 +112,13 @@ adminLogin();
                                     $html .= "<td class='text-center'>" . date('Y-m-d', strtotime($value['checkIn'])) . "</td>";
                                     $html .= "<td class='text-center'>" . date('Y-m-d', strtotime($value['checkOut'])) . "</td>";
                                     $html .= "<td class='text-center'>$value[status]</td>";
+                                    $html .= "<td class='text-center'>$value[paymentMethod]</td>";
+                                    $html .= "<td class='text-center'>$value[userPayed]</td>";
+                                    $html .= "<td class='text-center'>$value[totalPrice]</td>";
+                                    $html .= "<td class='text-center'>" . ($value['totalPrice'] - $value['userPayed']) . "</td>";
+
                                     $html .= "<td class='text-center'>";
-                                    $html .= "<button type='button' class='btn btn-primary view-button' data-bs-toggle='modal' data-bs-target='#viewModal' data-bs-id='$value[id]'>View</button>";
+                                    $html .= "<button type='button' class='btn btn-primary view-button' data-bs-toggle='modal' data-bs-target='#viewModal' data-bs-id='$value[id]' data-bs-total-price='$value[totalPrice]'>View</button>";
                                     $html .= "</td>";
                                     $html .= "</tr>";
                                 }
@@ -137,8 +146,10 @@ adminLogin();
                                     <label for="status" class="form-label">Status Of Booking</label>
                                     <span>Booking ID : </span> <span id="modalId"></span>
                                     <input type="hidden" name="id" id="modalIdInput">
+                                    <input type="hidden" name="totalPrice" id="modalTotalPrice">
                                     <select class="form-select" name="status" id="status">
                                         <option value="BOOKED">Booked</option>
+                                        <option value="PAYED">Payed</option>
                                         <option value="CHECKEDIN">Checked In</option>
                                         <option value="CHECKEDOUT">Checked Out</option>
                                         <option value="CANCELLED">Cancelled</option>
@@ -170,6 +181,7 @@ adminLogin();
                     console.log(id);
                     document.getElementById('modalIdInput').value = id;
                     document.getElementById('modalId').innerHTML = id;
+                    document.getElementById('modalTotalPrice').value = button.getAttribute('data-bs-total-price');
                 });
             });
             $('#updateStatus').submit(function (e) {

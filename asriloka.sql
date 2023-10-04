@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 01, 2023 at 03:17 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Waktu pembuatan: 02 Okt 2023 pada 04.16
+-- Versi server: 10.4.24-MariaDB
+-- Versi PHP: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `booking`
+-- Struktur dari tabel `booking`
 --
 
 CREATE TABLE `booking` (
@@ -33,70 +33,70 @@ CREATE TABLE `booking` (
   `checkIn` datetime(3) NOT NULL,
   `checkOut` datetime(3) NOT NULL,
   `roomId` int(11) DEFAULT NULL,
-  `status` enum('BOOKED','PAYED','CHECKEDIN','CHECKEDOUT','CANCELLED') DEFAULT 'BOOKED',
+  `status` enum('BOOKED','PAYED','CHECKEDIN','CHECKEDOUT','CANCELLED') COLLATE utf8mb4_unicode_ci DEFAULT 'BOOKED',
   `totalPrice` int(50) NOT NULL,
   `bundlingId` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `booking`
+-- Dumping data untuk tabel `booking`
 --
 
 INSERT INTO `booking` (`id`, `userId`, `checkIn`, `checkOut`, `roomId`, `status`, `totalPrice`, `bundlingId`) VALUES
-(32, 7, '2023-10-01 00:00:00.000', '2023-10-02 00:00:00.000', 71, 'BOOKED', 550000, NULL),
-(35, 7, '2023-10-01 00:00:00.000', '2023-10-10 00:00:00.000', 72, 'CHECKEDIN', 19800000, NULL),
-(37, 7, '2023-10-01 00:00:00.000', '2023-10-02 00:00:00.000', 67, 'CHECKEDOUT', 1100000, NULL),
-(38, 7, '2023-10-01 00:00:00.000', '2023-10-02 00:00:00.000', NULL, 'CHECKEDIN', 1100000, 24),
-(39, 7, '2023-10-01 00:00:00.000', '2023-10-02 00:00:00.000', NULL, 'BOOKED', 1100000, 23);
+(40, 7, '2023-10-01 00:00:00.000', '2023-10-03 00:00:00.000', 67, 'BOOKED', 3300000, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bundling`
+-- Struktur dari tabel `bundling`
 --
 
 CREATE TABLE `bundling` (
   `id` int(11) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `description` varchar(191) NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` double NOT NULL,
-  `type` enum('LDK','PERUSAHAAN','KELUARGA','CAMP') NOT NULL,
-  `picture` varchar(191) DEFAULT NULL,
+  `type` enum('LDK','PERUSAHAAN','KELUARGA','CAMP') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `picture` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `isReady` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `bundling`
+-- Dumping data untuk tabel `bundling`
 --
 
 INSERT INTO `bundling` (`id`, `name`, `description`, `price`, `type`, `picture`, `isReady`) VALUES
-(23, 'Minimalis', '', 1000000, 'CAMP', NULL, 1),
-(24, '100 orang', '', 1000000, 'PERUSAHAAN', NULL, 1);
+(24, 'Paket A - Gathering (No Trainer)', '', 75000, 'PERUSAHAAN', NULL, 0),
+(25, 'Paket A - Tanpa Menginap (No Trainer)', '', 65000, 'LDK', NULL, 1),
+(26, 'Skuy camp', '', 12000, 'CAMP', NULL, 1),
+(27, 'Paket B - Tanpa Menginap (With Trainer)', '', 95000, 'LDK', NULL, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `capacity`
+-- Struktur dari tabel `capacity`
 --
 
 CREATE TABLE `capacity` (
   `id` int(11) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `description` varchar(191) NOT NULL
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `capacity`
+-- Dumping data untuk tabel `capacity`
 --
 
 INSERT INTO `capacity` (`id`, `name`, `description`) VALUES
-(1, 'Standard', '4 Dewasa 1 Anak'),
-(2, 'Standard', '2 Dewasa 4 anak');
+(1, 'Standard', '2'),
+(2, 'Standard', '3'),
+(3, 'standar', '4'),
+(4, 'standar', '15');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `capacityonroom`
+-- Struktur dari tabel `capacityonroom`
 --
 
 CREATE TABLE `capacityonroom` (
@@ -105,41 +105,41 @@ CREATE TABLE `capacityonroom` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `capacityonroom`
+-- Dumping data untuk tabel `capacityonroom`
 --
 
 INSERT INTO `capacityonroom` (`roomId`, `capacityId`) VALUES
-(67, 2),
+(67, 4),
 (71, 2),
-(72, 2);
+(73, 2),
+(74, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `facility`
+-- Struktur dari tabel `facility`
 --
 
 CREATE TABLE `facility` (
   `id` int(11) NOT NULL,
-  `picture` varchar(191) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `description` varchar(191) NOT NULL,
+  `picture` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `isGeneral` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `facility`
+-- Dumping data untuk tabel `facility`
 --
 
 INSERT INTO `facility` (`id`, `picture`, `name`, `description`, `isGeneral`) VALUES
 (6, 'internet.png', 'Wifi', 'Tanya di loket', 1),
-(14, '1bb30149-c9a8-4240-947c-530f6e9863f9.jpg', 'TV', 'TV dgn ch inter\r\n', 1),
-(15, '60961de48b31a.jpg', 'GYM area', 'ngegym', 0);
+(14, '1bb30149-c9a8-4240-947c-530f6e9863f9.jpg', 'TV', 'TV dgn ch inter\r\n', 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `facilityonbundling`
+-- Struktur dari tabel `facilityonbundling`
 --
 
 CREATE TABLE `facilityonbundling` (
@@ -148,19 +148,19 @@ CREATE TABLE `facilityonbundling` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `facilityonbundling`
+-- Dumping data untuk tabel `facilityonbundling`
 --
 
 INSERT INTO `facilityonbundling` (`bundlingId`, `facilityId`) VALUES
-(23, 15),
 (24, 6),
-(24, 14),
-(24, 15);
+(25, 6),
+(26, 6),
+(27, 6);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `facilityonroom`
+-- Struktur dari tabel `facilityonroom`
 --
 
 CREATE TABLE `facilityonroom` (
@@ -169,43 +169,42 @@ CREATE TABLE `facilityonroom` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `facilityonroom`
+-- Dumping data untuk tabel `facilityonroom`
 --
 
 INSERT INTO `facilityonroom` (`roomId`, `facilityId`) VALUES
-(67, 6),
+(67, 14),
 (71, 14),
-(71, 15),
-(72, 6),
-(72, 14),
-(72, 15);
+(73, 6),
+(73, 14),
+(74, 6);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `generalinformation`
+-- Struktur dari tabel `generalinformation`
 --
 
 CREATE TABLE `generalinformation` (
   `id` int(11) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `description` varchar(191) NOT NULL,
-  `picture` varchar(191) DEFAULT NULL
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `picture` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `picture`
+-- Struktur dari tabel `picture`
 --
 
 CREATE TABLE `picture` (
   `id` int(11) NOT NULL,
-  `name` varchar(191) DEFAULT NULL
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `picture`
+-- Dumping data untuk tabel `picture`
 --
 
 INSERT INTO `picture` (`id`, `name`) VALUES
@@ -296,12 +295,38 @@ INSERT INTO `picture` (`id`, `name`) VALUES
 (113, 'penginapan1.jpg'),
 (114, 'slide2.jpg'),
 (115, 'slide3.jpg'),
-(116, 'slide4.jpg');
+(116, 'slide4.jpg'),
+(117, 'penginapan1.jpg'),
+(118, 'penginapan1.jpg'),
+(119, 'WhatsApp Image 2023-10-01 at 23.16.27.jpeg'),
+(120, 'WhatsApp Image 2023-10-01 at 23.17.42.jpeg'),
+(121, 'perusahaan.jpeg'),
+(122, 'perusahaan.jpeg'),
+(123, 'WhatsApp Image 2023-10-01 at 23.16.27.jpeg'),
+(124, 'slide2.jpg'),
+(125, 'camp.jpg'),
+(126, 'camp.jpg'),
+(127, 'kompor.jpg'),
+(128, 'musholla.png'),
+(129, 'slide2.jpg'),
+(130, 'kompor.jpg'),
+(131, 'kompor.jpg'),
+(132, 'kompor.jpg'),
+(133, 'kompor.jpg'),
+(134, 'kompor.jpg'),
+(135, 'perusahaan.jpeg'),
+(136, 'slide3.jpg'),
+(137, 'slide4.jpg'),
+(138, 'penginapan1.jpg'),
+(139, 'slide2.jpg'),
+(140, 'perusahaan.jpeg'),
+(141, 'perusahaan.jpeg'),
+(142, 'perusahaan.jpeg');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pictureonbundling`
+-- Struktur dari tabel `pictureonbundling`
 --
 
 CREATE TABLE `pictureonbundling` (
@@ -310,19 +335,19 @@ CREATE TABLE `pictureonbundling` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `pictureonbundling`
+-- Dumping data untuk tabel `pictureonbundling`
 --
 
 INSERT INTO `pictureonbundling` (`bundlingId`, `pictureId`) VALUES
-(23, 58),
-(24, 35),
-(24, 36),
-(24, 37);
+(24, 121),
+(25, 121),
+(26, 127),
+(27, 121);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pictureonroom`
+-- Struktur dari tabel `pictureonroom`
 --
 
 CREATE TABLE `pictureonroom` (
@@ -331,31 +356,26 @@ CREATE TABLE `pictureonroom` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `pictureonroom`
+-- Dumping data untuk tabel `pictureonroom`
 --
 
 INSERT INTO `pictureonroom` (`roomId`, `pictureId`) VALUES
 (67, 34),
-(67, 35),
-(67, 36),
-(67, 37),
-(71, 36),
-(71, 37),
-(72, 34),
-(72, 35),
-(72, 36),
-(72, 37);
+(71, 34),
+(73, 36),
+(74, 34),
+(74, 35);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `review`
+-- Struktur dari tabel `review`
 --
 
 CREATE TABLE `review` (
   `id` int(11) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `description` varchar(191) NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `rating` double NOT NULL,
   `roomId` int(11) DEFAULT NULL,
   `userId` int(11) DEFAULT NULL
@@ -364,32 +384,33 @@ CREATE TABLE `review` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `room`
+-- Struktur dari tabel `room`
 --
 
 CREATE TABLE `room` (
   `id` int(11) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `description` varchar(191) DEFAULT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `price` double NOT NULL,
   `rating` double NOT NULL DEFAULT 0,
   `isReady` tinyint(1) NOT NULL DEFAULT 0,
-  `picture` varchar(191) DEFAULT NULL
+  `picture` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `room`
+-- Dumping data untuk tabel `room`
 --
 
 INSERT INTO `room` (`id`, `name`, `description`, `price`, `rating`, `isReady`, `picture`) VALUES
-(67, 'Deluxe', NULL, 1000000, 0, 1, NULL),
-(71, 'Standart', NULL, 500000, 0, 1, NULL),
-(72, 'Honeymoon', NULL, 2000000, 0, 1, NULL);
+(67, 'Janaka Besar', NULL, 1500000, 0, 0, NULL),
+(71, 'Janaka Kecil 1', NULL, 300000, 0, 0, NULL),
+(73, 'Graha Dewi Kunti', NULL, 350000, 0, 1, NULL),
+(74, 'Griya Arimbi 1', NULL, 350000, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `roomonbundling`
+-- Struktur dari tabel `roomonbundling`
 --
 
 CREATE TABLE `roomonbundling` (
@@ -400,28 +421,30 @@ CREATE TABLE `roomonbundling` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rule`
+-- Struktur dari tabel `rule`
 --
 
 CREATE TABLE `rule` (
   `id` int(11) NOT NULL,
   `isGeneral` tinyint(1) NOT NULL DEFAULT 1,
-  `description` varchar(191) NOT NULL
+  `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `rule`
+-- Dumping data untuk tabel `rule`
 --
 
 INSERT INTO `rule` (`id`, `isGeneral`, `description`) VALUES
 (3, 1, 'Pembayaran penuh pada saat Check-in'),
 (4, 1, 'Pembatalan reservasi maksimal 1x24 jam sebelum tanggal penyewaan dengan melakukan pemberitahuan kepada pihak Asriloka. Jika lebih dari 1x24 jam akan dikenakan biaya 1 malam penyewaan\r\n'),
-(6, 1, 'Sebelum menyewa, silahkan melakukan konfirmasi ketersediaan kamar kepada pihak Asriloka\r\n');
+(6, 1, 'Sebelum menyewa, silahkan melakukan konfirmasi ketersediaan penginapan/paket kepada pihak Asriloka\r\n'),
+(7, 1, 'Check-in 14.00 WIB & Check-out 12.00 WIB'),
+(8, 1, 'Dilarang merokok di dalam kamar');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ruleonbundling`
+-- Struktur dari tabel `ruleonbundling`
 --
 
 CREATE TABLE `ruleonbundling` (
@@ -430,73 +453,79 @@ CREATE TABLE `ruleonbundling` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `ruleonbundling`
+-- Dumping data untuk tabel `ruleonbundling`
 --
 
 INSERT INTO `ruleonbundling` (`bundlingId`, `ruleId`) VALUES
-(23, 6),
-(24, 6);
+(24, 6),
+(25, 3),
+(26, 6),
+(27, 6);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ruleonroom`
+-- Struktur dari tabel `ruleonroom`
 --
 
 CREATE TABLE `ruleonroom` (
   `roomId` int(11) NOT NULL,
   `ruleId` int(11) NOT NULL,
   `assignedAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
-  `assignedBy` varchar(191) NOT NULL
+  `assignedBy` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `ruleonroom`
+-- Dumping data untuk tabel `ruleonroom`
 --
 
 INSERT INTO `ruleonroom` (`roomId`, `ruleId`, `assignedAt`, `assignedBy`) VALUES
-(67, 4, '2023-10-01 16:54:28.459', ''),
-(71, 3, '2023-10-01 16:57:55.155', ''),
-(72, 4, '2023-10-01 16:58:23.424', ''),
-(72, 6, '2023-10-01 16:58:23.425', '');
+(67, 3, '2023-10-01 23:27:12.983', ''),
+(67, 4, '2023-10-01 23:27:12.986', ''),
+(67, 6, '2023-10-01 23:27:12.989', ''),
+(67, 7, '2023-10-01 23:27:12.991', ''),
+(71, 3, '2023-10-01 23:28:00.940', ''),
+(71, 4, '2023-10-01 23:28:00.944', ''),
+(71, 6, '2023-10-01 23:28:00.946', ''),
+(71, 7, '2023-10-01 23:28:00.947', ''),
+(73, 7, '2023-10-02 00:48:13.965', ''),
+(74, 7, '2023-10-02 00:50:11.032', ''),
+(74, 8, '2023-10-02 00:50:11.033', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struktur dari tabel `user`
 --
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `email` varchar(191) NOT NULL,
-  `password` varchar(191) NOT NULL,
-  `picture` varchar(191) DEFAULT NULL,
-  `phone` varchar(191) DEFAULT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `picture` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dob` datetime(3) DEFAULT current_timestamp(3),
-  `address` varchar(191) DEFAULT NULL,
-  `role` enum('ADMIN','USER') NOT NULL DEFAULT 'USER',
-  `token` varchar(191) DEFAULT 'undefined'
+  `address` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `role` enum('ADMIN','USER') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'USER',
+  `token` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'undefined'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `user`
+-- Dumping data untuk tabel `user`
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `password`, `picture`, `phone`, `dob`, `address`, `role`, `token`) VALUES
-(1, 'Admin', 'admin1@asriloka.com', '$2y$10$sOyO5sIOdqKUI/aQ9567IuoTkZCCClTXUUyaaucfEpAn5JPlz564y', NULL, NULL, '2023-09-25 17:39:33.255', NULL, 'ADMIN', 'g+b+zzZyNeSq5+WszOgDjnjC8wyU+WFxwCDDkvFkVlY='),
+(1, 'Admin', 'admin1@asriloka.com', '$2y$10$sOyO5sIOdqKUI/aQ9567IuoTkZCCClTXUUyaaucfEpAn5JPlz564y', NULL, NULL, '2023-09-25 17:39:33.255', NULL, 'ADMIN', 'KuavCwLVCYFTWcaLHgDQGzTAO+pZxPD+4oM1CQberEk='),
 (2, 'User', 'usertest@asriloka.com', '$2y$10$8QLNcqg5ujhpZAefgHD27OAFwcCReL5T34q8hhD7TCFCvvq2y77Dq', NULL, '1234567890', '2000-01-01 00:00:00.000', 'User Address', 'ADMIN', 'undefined'),
-(3, 'Rahmat Hidayatullah', 'bokirsianpar95@gmail.com', '$2y$10$gkUqcx4v8ejX93BjekZO8uvDoa5GVkQFTAJcKuUysFf1ze4dpew5e', '1695724804-6512b5049435a.png', '085732030855', '2003-01-26 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'c747b8015379ac1b24b80d9ed5ef9f47'),
-(5, 'Rahmat Hidayatullah', 'a@b.com', '$2y$10$j9WeH38apElPO9v5a/U4tOLh4gyyB9aKa4zfmtP8voDyjEc4CqWGu', '1696054695-6517bda7413bd.png', NULL, '2023-09-30 13:18:15.316', NULL, 'USER', 'undefined'),
-(6, 'Rahmat Hidayatullah', 'a@gmail.com', '$2y$10$VVp6XnfA.6GprYY14dPvB.ZLQxxkO4nPJZQO58s1FrxcdLEGBCfCq', NULL, '085732030855', '2023-09-30 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', '03cc28c9ad2e891c5d990da59ad74ff3'),
-(7, 'Rahmat Hidayatullah', 'user@user.com', '$2y$10$PCV6t8bLPAjdvzVXjHA4CuaJZLZ9fmzziLAfx5qwN6MuiWOKW3Oce', NULL, '085732030855', '2023-10-01 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'NO0jJH4e0ObqcFVX7+JlD4ZMGvkLg84NBu/qd563y74=');
+(7, 'Solihah', 'user@user.com', '$2y$10$PCV6t8bLPAjdvzVXjHA4CuaJZLZ9fmzziLAfx5qwN6MuiWOKW3Oce', NULL, '085732030855', '2023-10-01 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'uGdRPQkgppFkan/Uxkvqf8V/GXwoWnEHO5A8oYm3kVo=');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `booking`
+-- Indeks untuk tabel `booking`
 --
 ALTER TABLE `booking`
   ADD PRIMARY KEY (`id`),
@@ -505,72 +534,72 @@ ALTER TABLE `booking`
   ADD KEY `Booking_roomId_fkey` (`roomId`);
 
 --
--- Indexes for table `bundling`
+-- Indeks untuk tabel `bundling`
 --
 ALTER TABLE `bundling`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `capacity`
+-- Indeks untuk tabel `capacity`
 --
 ALTER TABLE `capacity`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `capacityonroom`
+-- Indeks untuk tabel `capacityonroom`
 --
 ALTER TABLE `capacityonroom`
   ADD PRIMARY KEY (`roomId`,`capacityId`),
   ADD KEY `CapacityOnRoom_capacityId_fkey` (`capacityId`);
 
 --
--- Indexes for table `facility`
+-- Indeks untuk tabel `facility`
 --
 ALTER TABLE `facility`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `facilityonbundling`
+-- Indeks untuk tabel `facilityonbundling`
 --
 ALTER TABLE `facilityonbundling`
   ADD PRIMARY KEY (`bundlingId`,`facilityId`),
   ADD KEY `FacilityOnBundling_facilityId_fkey` (`facilityId`);
 
 --
--- Indexes for table `facilityonroom`
+-- Indeks untuk tabel `facilityonroom`
 --
 ALTER TABLE `facilityonroom`
   ADD PRIMARY KEY (`roomId`,`facilityId`),
   ADD KEY `FacilityOnRoom_facilityId_fkey` (`facilityId`);
 
 --
--- Indexes for table `generalinformation`
+-- Indeks untuk tabel `generalinformation`
 --
 ALTER TABLE `generalinformation`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `picture`
+-- Indeks untuk tabel `picture`
 --
 ALTER TABLE `picture`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `pictureonbundling`
+-- Indeks untuk tabel `pictureonbundling`
 --
 ALTER TABLE `pictureonbundling`
   ADD PRIMARY KEY (`bundlingId`,`pictureId`),
   ADD KEY `PictureOnBundling_pictureId_fkey` (`pictureId`);
 
 --
--- Indexes for table `pictureonroom`
+-- Indeks untuk tabel `pictureonroom`
 --
 ALTER TABLE `pictureonroom`
   ADD PRIMARY KEY (`roomId`,`pictureId`),
   ADD KEY `PictureOnRoom_pictureId_fkey` (`pictureId`);
 
 --
--- Indexes for table `review`
+-- Indeks untuk tabel `review`
 --
 ALTER TABLE `review`
   ADD PRIMARY KEY (`id`),
@@ -578,178 +607,178 @@ ALTER TABLE `review`
   ADD KEY `Review_userId_fkey` (`userId`);
 
 --
--- Indexes for table `room`
+-- Indeks untuk tabel `room`
 --
 ALTER TABLE `room`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `roomonbundling`
+-- Indeks untuk tabel `roomonbundling`
 --
 ALTER TABLE `roomonbundling`
   ADD PRIMARY KEY (`bundlingId`,`roomId`),
   ADD KEY `RoomOnBundling_roomId_fkey` (`roomId`);
 
 --
--- Indexes for table `rule`
+-- Indeks untuk tabel `rule`
 --
 ALTER TABLE `rule`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `ruleonbundling`
+-- Indeks untuk tabel `ruleonbundling`
 --
 ALTER TABLE `ruleonbundling`
   ADD PRIMARY KEY (`bundlingId`,`ruleId`),
   ADD KEY `RuleOnBundling_ruleId_fkey` (`ruleId`);
 
 --
--- Indexes for table `ruleonroom`
+-- Indeks untuk tabel `ruleonroom`
 --
 ALTER TABLE `ruleonroom`
   ADD PRIMARY KEY (`roomId`,`ruleId`),
   ADD KEY `RuleOnRoom_ruleId_fkey` (`ruleId`);
 
 --
--- Indexes for table `user`
+-- Indeks untuk tabel `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `User_email_key` (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `booking`
+-- AUTO_INCREMENT untuk tabel `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
--- AUTO_INCREMENT for table `bundling`
+-- AUTO_INCREMENT untuk tabel `bundling`
 --
 ALTER TABLE `bundling`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
--- AUTO_INCREMENT for table `capacity`
+-- AUTO_INCREMENT untuk tabel `capacity`
 --
 ALTER TABLE `capacity`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `facility`
+-- AUTO_INCREMENT untuk tabel `facility`
 --
 ALTER TABLE `facility`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT for table `generalinformation`
+-- AUTO_INCREMENT untuk tabel `generalinformation`
 --
 ALTER TABLE `generalinformation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `picture`
+-- AUTO_INCREMENT untuk tabel `picture`
 --
 ALTER TABLE `picture`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
 
 --
--- AUTO_INCREMENT for table `review`
+-- AUTO_INCREMENT untuk tabel `review`
 --
 ALTER TABLE `review`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `room`
+-- AUTO_INCREMENT untuk tabel `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
--- AUTO_INCREMENT for table `rule`
+-- AUTO_INCREMENT untuk tabel `rule`
 --
 ALTER TABLE `rule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `booking`
+-- Ketidakleluasaan untuk tabel `booking`
 --
 ALTER TABLE `booking`
   ADD CONSTRAINT `Booking_roomId_fkey` FOREIGN KEY (`roomId`) REFERENCES `room` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `Booking_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `capacityonroom`
+-- Ketidakleluasaan untuk tabel `capacityonroom`
 --
 ALTER TABLE `capacityonroom`
   ADD CONSTRAINT `CapacityOnRoom_capacityId_fkey` FOREIGN KEY (`capacityId`) REFERENCES `capacity` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `CapacityOnRoom_roomId_fkey` FOREIGN KEY (`roomId`) REFERENCES `room` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `facilityonbundling`
+-- Ketidakleluasaan untuk tabel `facilityonbundling`
 --
 ALTER TABLE `facilityonbundling`
   ADD CONSTRAINT `FacilityOnBundling_bundlingId_fkey` FOREIGN KEY (`bundlingId`) REFERENCES `bundling` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `FacilityOnBundling_facilityId_fkey` FOREIGN KEY (`facilityId`) REFERENCES `facility` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `facilityonroom`
+-- Ketidakleluasaan untuk tabel `facilityonroom`
 --
 ALTER TABLE `facilityonroom`
   ADD CONSTRAINT `FacilityOnRoom_facilityId_fkey` FOREIGN KEY (`facilityId`) REFERENCES `facility` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `FacilityOnRoom_roomId_fkey` FOREIGN KEY (`roomId`) REFERENCES `room` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `pictureonbundling`
+-- Ketidakleluasaan untuk tabel `pictureonbundling`
 --
 ALTER TABLE `pictureonbundling`
   ADD CONSTRAINT `PictureOnBundling_bundlingId_fkey` FOREIGN KEY (`bundlingId`) REFERENCES `bundling` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `PictureOnBundling_pictureId_fkey` FOREIGN KEY (`pictureId`) REFERENCES `picture` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `pictureonroom`
+-- Ketidakleluasaan untuk tabel `pictureonroom`
 --
 ALTER TABLE `pictureonroom`
   ADD CONSTRAINT `PictureOnRoom_pictureId_fkey` FOREIGN KEY (`pictureId`) REFERENCES `picture` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `PictureOnRoom_roomId_fkey` FOREIGN KEY (`roomId`) REFERENCES `room` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `review`
+-- Ketidakleluasaan untuk tabel `review`
 --
 ALTER TABLE `review`
   ADD CONSTRAINT `Review_roomId_fkey` FOREIGN KEY (`roomId`) REFERENCES `room` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `Review_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `roomonbundling`
+-- Ketidakleluasaan untuk tabel `roomonbundling`
 --
 ALTER TABLE `roomonbundling`
   ADD CONSTRAINT `RoomOnBundling_bundlingId_fkey` FOREIGN KEY (`bundlingId`) REFERENCES `bundling` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `RoomOnBundling_roomId_fkey` FOREIGN KEY (`roomId`) REFERENCES `room` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `ruleonbundling`
+-- Ketidakleluasaan untuk tabel `ruleonbundling`
 --
 ALTER TABLE `ruleonbundling`
   ADD CONSTRAINT `RuleOnBundling_bundlingId_fkey` FOREIGN KEY (`bundlingId`) REFERENCES `bundling` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `RuleOnBundling_ruleId_fkey` FOREIGN KEY (`ruleId`) REFERENCES `rule` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `ruleonroom`
+-- Ketidakleluasaan untuk tabel `ruleonroom`
 --
 ALTER TABLE `ruleonroom`
   ADD CONSTRAINT `RuleOnRoom_roomId_fkey` FOREIGN KEY (`roomId`) REFERENCES `room` (`id`) ON UPDATE CASCADE,

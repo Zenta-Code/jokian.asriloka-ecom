@@ -19,18 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $res = mysqli_query($conn, $sql);
     $user = mysqli_fetch_assoc($res);
     unset($user['password']);
-    // if ($data['type'] != '') {
-    //     $sql = "SELECT * FROM bundling WHERE id = $room";
-    //     $res = mysqli_query($conn, $sql);
-    //     $room = mysqli_fetch_assoc($res);
-    //     $sql = "SELECT * FROM booking WHERE roomId = $room[id]";
-    //     $res = mysqli_query($conn, $sql);
-    //     $bookings = mysqli_fetch_all($res, MYSQLI_ASSOC);
-    // } else {
-    //     $sql = "SELECT * FROM booking WHERE roomId = $room";
-    //     $res = mysqli_query($conn, $sql);
-    //     $bookings = mysqli_fetch_all($res, MYSQLI_ASSOC);
-    // }
+
     $sql = "SELECT * FROM booking WHERE roomId = $room";
     $res = mysqli_query($conn, $sql);
     $bookings = mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -75,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
         }
     }
 
+    // check dp isnot greater than total price and dp must greater than 35% of total price
+
     if ($data['type'] != '') {
         $sql = "SELECT * FROM bundling WHERE id = $room";
         $res = mysqli_query($conn, $sql);
@@ -90,6 +81,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $total_price = $room['price'] * $hari;
     $total_price = $total_price + ($total_price * 0.1);
 
+    $sisa = 0;
+    if ($data['tipe_pembayaran'] == 'dp') {
+        $sisa = $total_price - $data['dp'];
+    } else {
+        $sisa = 0;
+    }
+    if ($data['tipe_pembayaran'] == 'dp') {
+        if ($data['dp'] > $total_price) {
+            echo json_encode([
+                'status' => 'failed',
+                'message' => 'DP tidak boleh lebih besar dari total harga'
+            ]);
+            die();
+        }
+        if ($data['dp'] < 100000) {
+            echo json_encode([
+                'status' => 'failed',
+                'message' => 'Minimal DP Rp. 100.000,-'
+            ]);
+            die();
+        }
+    }
+
 
     echo json_encode([
         'status' => 'success',
@@ -100,6 +114,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
         'payment' => $payment,
         'check_in' => date('Y-m-d'),
         'check_out' => date('Y-m-d', strtotime('+' . $hari . ' days')),
+        'dp' => $data['dp'],
+        'sisa' => $sisa,
+        'tipe_pembayaran' => $data['tipe_pembayaran'],
     ]);
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQUEST['action'] === 'konfirmasi') {
@@ -113,11 +130,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $conn = $GLOBALS['conn'];
 
     if ($data['type_bundling'] == 'room') {
-        $sql = "INSERT INTO booking (userId, roomId, checkIn, checkOut,totalPrice) VALUES (?, ?, ?, ?,?)";
-        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price']], 'iissi');
+        $sql = "INSERT INTO booking (userId, roomId, checkIn, checkOut,totalPrice, paymentMethod, userPayed) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price'], $data['tipe_pembayaran'], $data['dp']], 'iissisi');
     } else {
-        $sql = "INSERT INTO booking (userId, bundlingId, checkIn, checkOut,totalPrice) VALUES (?, ?, ?, ?,?)";
-        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price']], 'iissi');
+        $sql = "INSERT INTO booking (userId, bundlingId, checkIn, checkOut,totalPrice, paymentMethod, userPayed) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price'], $data['tipe_pembayaran'], $data['dp']], 'iissisi');
 
     }
     if ($res) {

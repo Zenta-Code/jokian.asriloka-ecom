@@ -70,14 +70,16 @@
                             $html = "<table class='table table-striped'>";
                             $html .= "<thead>";
                             $html .= "<tr>";
-                            $html .= "<th scope='col'>No Pemesaan</th>";
+                            $html .= "<th style='width: 10px;'>No Pemesanan</th>";
                             $html .= "<th scope='col'>Room</th>";
                             $html .= "<th scope='col'>Check In</th>";
                             $html .= "<th scope='col'>Check Out</th>";
                             $html .= "<th scope='col'>Total Price</th>";
                             $html .= "<th scope='col'>Status</th>";
-                            $html .= "<th scope='col'>Invoice</th>"; 
+                            $html .= "<th scope='col'>Pembayaran</th>";
+                            $html .= "<th scope='col'>Invoice</th>";
                             $html .= "</tr>";
+
                             $html .= "</thead>";
                             $html .= "<tbody>";
                             foreach ($booking as $key => $value) {
@@ -100,14 +102,37 @@
                                 $html .= "<td>" . date('Y-m-d', strtotime($value['checkOut'])) . "</td>";
                                 $html .= "<td>$value[totalPrice]</td>";
                                 $html .= "<td>$value[status]</td>";
-                                if ($value['status'] == 'BOOKED') {
+                                $html .= "<td>";
+                                if ($value['paymentMethod'] == 'DP') {
+                                    $html .= "<div class='text-center'>";
+                                    $html .= "DP : $value[userPayed] <br>";
+                                    $html .= "</div>";
+                                } else {
+                                    $html .= "<span>Lunas</span>";
+                                }
+                                if ($value['status'] == 'BOOKED' && $value['paymentMethod'] == 'DP') {
                                     $_SESSION['sukses'] = "Segera lakukan pembayaran untuk mengkonfirmasi pemesanan anda";
-                                    $html .= "<td><span class='text-danger'>Belum Dibayar</span></td>";
+                                    $html .= "<td><div class='text-center'><div>";
+                                    $html .= "Menunggu Sisa Pembayaran :";
+                                    $html .= "<span class='text-danger'> ";
+                                    $html .= $value['totalPrice'] - $value['userPayed'];
+                                    $html .= "</span>";
+                                    $html .= "</div></div></td>";
+                                } else if ($value['status'] == 'CANCELLED') {
+                                    $html .= "<td><div class='text-center'><div>";
+                                    $html .= "Pemesanan Dibatalkan";
+                                    $html .= "</div></div></td>";
+                                } else if ($value['status'] == 'CHECKEDIN') {
+                                    $html .= "<td><div class='text-center'><div>";
+                                    $html .= "Check In";
+                                    $html .= "</div></div></td>";
+                                } else if ($value['status'] == 'CHECKEDOUT') {
+                                    $html .= "<td><div class='text-center'><div>";
+                                    $html .= "Check Out";
+                                    $html .= "</div></div></td>";
                                 } else {
                                     $html .= "<td><a href='invoice.php?booking_id=$value[id]&user_id=$user[id]&room_id=$value[roomId]&check_in=$value[checkIn]&check_out=$value[checkOut]' class='btn btn-primary'>Invoice</a></td>";
                                 }
-
-
                                 $html .= "</tr>";
                             }
                             $html .= "</tbody>";

@@ -1,10 +1,10 @@
 <div class="container-fluid bg-white mt-5">
     <div class="row">
         <div class="col-lg-4 p-4">
-            <h3 class="h-font fw-bold fs-3 mb-2">SABRINAHOMESTAY</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium provident, ipsa, incidunt
-                repellat laboriosam nesciunt odio at odit accusantium ipsam iste laudantium eos quaerat corporis.
-                Error officia labore ea omnis.</p>
+            <h3 class="h-font fw-bold fs-3 mb-2">Asriloka Wonosalam</h3>
+            <p>Asriloka Wonosalam merupakan salah satu provider outbound terbaik di Wonosalam yang memfokuskan pelatihan
+                pengembangan sumber daya manusia dengan program yang bisa disesuaikan dengan permintaan klien. Kami
+                memiliki tim dan fasilitator yng sudah profesional dan berpengalaman dalam bidangnya.</p>
         </div>
         <div class="col-lg-4 p-4">
             <h5 class="mb-3">Links</h5>

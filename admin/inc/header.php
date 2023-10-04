@@ -27,7 +27,7 @@
                         Reservasi
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="rooms">Rooms</a></li>
+                        <li><a class="dropdown-item" href="rooms">Penginapan</a></li>
                         <li><a class="dropdown-item" href="pktLDK">Paket LDK</a></li>
                         <li><a class="dropdown-item" href="pktPerusahaan">Paket Perusahaan</a></li>
                         <li><a class="dropdown-item" href="pktCamp">Paket Camp</a></li>

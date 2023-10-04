@@ -261,15 +261,25 @@
 
 
                         <label for="payment_method" class="form-label">Pilih metode pembayaran</label>
-                        <select class="form-select" id="payment_method" name="payment_method">
-                            <option value="dana">DANA</option>
-                            <option value="bank_transfer">BCA</option>
+                        <select class="form-select" id="tipe_pembayaran" name="tipe_pembayaran">
+                            <option value="full">Full</option>
+                            <option value="dp">DP</option>
                         </select>
+
+                        <!-- if tipe_pembayan is DP shown an input box -->
+                        <div class="mb-3 mt-3" id="dp">
+                            <label for="dp" class="form-label">DP (min Rp. 100.000,-)</label>
+                            <input type="number" class="form-control" id="dp" name="dp"
+                                placeholder="Masukkan Nominal DP">
+                        </div>
+
                         <!-- date picker for check in and check out -->
                         <label for="check_in" class="form-label">Tanggal Check In</label>
                         <input type="date" class="form-control" id="check_in" name="check_in" required>
                         <label for="check_out" class="form-label">Tanggal Check Out</label>
                         <input type="date" class="form-control" id="check_out" name="check_out" required>
+
+                        <input type="hidden" value="Transfer Bank" name="payment_method">
 
                         <!-- hidden room input -->
                         <input type="hidden" name="room_id" value="<?php if (!empty($room['id'])) {
@@ -317,6 +327,17 @@
             crossorigin="anonymous"></script>
         <?php include './admin/inc/scripts.php' ?>
         <script>
+            $("#dp").hide();
+
+            $("#tipe_pembayaran").on("change", function () {
+                console.log($(this).val());
+                if ($(this).val() == "dp") {
+                    $("#dp").show();
+                } else {
+                    $("#dp").hide();
+                }
+            });
+
             $("#form_pembayaran").on("submit", function (e) {
                 e.preventDefault();
                 var dana_number = "0857 2003 4203 1980";
@@ -329,6 +350,7 @@
                     data: $(this).serialize(),
                     caches: false,
                     success: function (response) {
+                        console.log('Details : ', response);
                         var data = JSON.parse(response);
                         var type_bundling = "room";
                         if (data.status == "success") {
@@ -361,6 +383,8 @@
                                     data.room.id +
                                     "</span></h5>";
                             }
+                            html += `<h5>Check In: <span class="text-primary">${data.check_in}</span></h5>`;
+                            html += `<h5>Check Out: <span class="text-primary">${data.check_out}</span></h5>`;
                             if (data.payment == "dana") {
                                 html += `<h5>Nomor Rekening: <span class="text-primary">${dana_number}</span></h5>`;
                             } else {
@@ -368,11 +392,17 @@
                             }
                             html +=
                                 '<h5>Metode Pembayaran: <span class="text-primary">' +
-                                data.payment.toUpperCase() +
-                                "</span></h5>";
+                                data.payment.toUpperCase();
+                            if (data.sisa != 0) {
+                                html += ` (DP)</span></h5>`;
+                                html += `<h5>Nominal DP: <span class="text-primary">Rp ${data.sisa.toLocaleString('id-ID')}</span></h5>`;
+                            } else {
+                                html += "</span></h5>";
+                            }
+
+
                             html += `<h5>Total Pembayaran:<span class="text-danger"> Rp ${data.total_price.toLocaleString('id-ID')} (PPN 10%) </span> </h5>`;
-                            html += `<h5>Check In: <span class="text-primary">${data.check_in}</span></h5>`;
-                            html += `<h5>Check Out: <span class="text-primary">${data.check_out}</span></h5>`;
+
                             html += `<button type="submit" class="btn btn-primary">Konfirmasi</button>`;
                             // hidden input
                             html += `<input type="hidden" name    ="type_bundling" value="${type_bundling}">`;
@@ -382,6 +412,9 @@
                             html += `<input type="hidden" name    ="total_price" value="${data.total_price}">`;
                             html += `<input type="hidden" name    ="check_in" value="${data.check_in}">`;
                             html += `<input type="hidden" name    ="check_out" value="${data.check_out}">`;
+                            html += `<input type="hidden" name    ="tipe_pembayaran" value="${data.tipe_pembayaran}">`;
+                            html += `<input type="hidden" name    ="dp" value="${data.dp}">`;
+
                             html += `</form>`;
                         } else {
                             html += `<h3>${data.message}</hh3`;
