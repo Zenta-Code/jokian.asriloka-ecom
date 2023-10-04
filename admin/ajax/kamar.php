@@ -9,49 +9,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $name = $data['room_name'];
     $price = $data['room_price'];
     $isReady = 0;
-    $picture = '';
-    if (isset($data['isReady'])) {
+    $picture = [];
+    if (isset($data['isReady']) && $data['isReady'] == 'on') {
         $isReady = 1;
     } else {
         $isReady = 0;
     }
     if (isset($_FILES['room_gambar'])) {
-        $picture = $_FILES['room_gambar']['name'];
-        echo 'Gambar ada' . $picture;
 
         $target_dir = "./../../assets/images/room/";
-        $target_file = $target_dir . basename($_FILES["room_gambar"]["name"]);
-
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-
-        $check = getimagesize($_FILES["room_gambar"]["tmp_name"]);
-        if ($check !== false) {
-
-            if (move_uploaded_file($_FILES["room_gambar"]["tmp_name"], $target_file)) {
-                $picture = basename($_FILES["room_gambar"]["name"]);
-            } else {
-                echo "Sorry, there was an error uploading your file.";
+        foreach ($_FILES['room_gambar']['name'] as $key => $value) {
+            $target_file = $target_dir . basename($_FILES["room_gambar"]["name"][$key]);
+            $check = getimagesize($_FILES["room_gambar"]["tmp_name"][$key]);
+            if ($check !== false) {
+                if (move_uploaded_file($_FILES["room_gambar"]["tmp_name"][$key], $target_file)) {
+                    $sql = "INSERT INTO picture (name) VALUES (?)";
+                    $res = update($sql, [$value], 's');
+                    $picture[] = $value;
+                }
             }
-        } else {
-            echo "File is not an image.";
-
         }
     }
 
-    $sql = "INSERT INTO room (name, price, isReady, picture) VALUES (?, ?, ?, ?)";
-    $res = update($sql, [$name, $price, $isReady, $picture], 'siis');
 
-    if ($res) {
-        echo "Kamar Berhasil Ditambahkan\n";
-    } else {
-        echo "Kamar Gagal Ditambahkan";
-    }
 
+
+    $sql = "INSERT INTO room (name, price, isReady) VALUES (?, ?, ?)";
+    $res = update($sql, [$name, $price, $isReady], 'sii');
     $sql = "SELECT * FROM room ORDER BY id DESC LIMIT 1";
     $res = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($res);
     $room = $row['id'];
+    foreach ($picture as $key => $value) {
+        $sql = "SELECT * FROM picture WHERE name = ?";
+        $res = select($sql, [$value], 's');
+        $row = mysqli_fetch_assoc($res);
+        $picture[$key] = $row['id'];
+    }
+    $sql = "INSERT INTO pictureonroom (roomId, pictureId) VALUES (?, ?)";
+    foreach ($picture as $key => $value) {
+        $res = update($sql, [$room, $value], 'ii');
+    }
+
+
 
 
     if (isset($data['selected_fasilitas']) && !empty($data['selected_fasilitas'])) {
@@ -107,6 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_REQUEST['action']) && $_REQU
 
 }
 
+
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_REQUEST['action']) && $_REQUEST['action'] === 'loadKamar') {
     $sql = "SELECT * FROM room";
     $room = mysqli_query($conn, $sql);
@@ -119,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_REQUEST['action']) && $_REQU
     $facility = [];
     $capacity = [];
     $rule = [];
+    $picture = [];
 
     foreach ($data as $key => $value) {
         $sql = "SELECT * FROM facilityonroom WHERE roomId = ?";
@@ -180,6 +184,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_REQUEST['action']) && $_REQU
         $data[$key]['rule'] = $rule;
         $rule = [];
     }
+
+    foreach ($data as $key => $value) {
+        $sql = "SELECT * FROM pictureonroom WHERE roomId = ?";
+        $res = select($sql, [$value['id']], 'i');
+        while ($row = mysqli_fetch_assoc($res)) {
+            $picture[] = $row;
+        }
+        $data[$key]['picture'] = $picture;
+        $picture = [];
+    }
+
+    foreach ($data as $key => $value) {
+        foreach ($value['picture'] as $k => $v) {
+            $sql = "SELECT * FROM picture WHERE id = ?";
+            $res = select($sql, [$v['pictureId']], 'i');
+            while ($row = mysqli_fetch_assoc($res)) {
+                $picture[] = $row;
+            }
+        }
+        $data[$key]['picture'] = $picture;
+        $picture = [];
+    }
+
     echo json_encode($data);
 }
 
@@ -189,44 +216,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $name = $data['edit_nama'];
     $price = $data['edit_price'];
     $isReady = 0;
-    $picture = '';
-    if (isset($data['isReady'])) {
+    $picture = [];
+    if (isset($data['edit_isReady']) && $data['edit_isReady'] == 'on') {
         $isReady = 1;
-    } else {
-        $isReady = 0;
-    }
-    if (isset($_FILES['edit_image'])) {
-        $picture = $_FILES['edit_image']['name'];
-        echo 'Gambar ada' . $picture;
-
-        $target_dir = "./../../assets/images/room/";
-        $target_file = $target_dir . basename($_FILES["edit_image"]["name"]);
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-        $check = getimagesize($_FILES["edit_image"]["tmp_name"]);
-
-        if ($check !== false) {
-            $uploadOk = 1;
-            if (move_uploaded_file($_FILES["edit_image"]["tmp_name"], $target_file)) {
-                $picture = basename($_FILES["edit_image"]["name"]);
-            } else {
-                echo "Sorry, there was an error uploading your file.";
-            }
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
     }
 
-    $sql = "UPDATE room SET name = ?, price = ?, isReady = ?, picture = ? WHERE id = ?";
-    $res = update($sql, [$name, $price, $isReady, $picture, $id], 'siisi');
+    $sql = "UPDATE room SET name = ?, price = ?, isReady = ? WHERE id = ?";
+    $res = update($sql, [$name, $price, $isReady, $id], 'siii');
 
     if ($res) {
         echo "Kamar Berhasil Diubah\n";
     } else {
         echo "Kamar Gagal Diubah";
     }
+
+    $sql = "DELETE FROM pictureonroom WHERE roomId = ?";
+    $res = update($sql, [$id], 'i');
 
     $sql = "DELETE FROM facilityonroom WHERE roomId = ?";
     $res = update($sql, [$id], 'i');
@@ -276,11 +281,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
             }
         }
     }
+
+    if (isset($_FILES['edit_image']) && !empty($_FILES['edit_image'])) {
+        $target_dir = "./../../assets/images/room/";
+        foreach ($_FILES['edit_image']['name'] as $key => $value) {
+            $target_file = $target_dir . basename($_FILES["edit_image"]["name"][$key]);
+            $check = getimagesize($_FILES["edit_image"]["tmp_name"][$key]);
+            if ($check !== false) {
+                if (move_uploaded_file($_FILES["edit_image"]["tmp_name"][$key], $target_file)) {
+                    $sql = "INSERT INTO picture (name) VALUES (?)";
+                    $res = update($sql, [$value], 's');
+                    $picture[] = $value;
+                }
+            }
+        }
+        foreach ($picture as $key => $value) {
+            $sql = "SELECT * FROM picture WHERE name = ?";
+            $res = select($sql, [$value], 's');
+            $row = mysqli_fetch_assoc($res);
+            $picture[$key] = $row['id'];
+        }
+
+        $sql = "INSERT INTO pictureonroom (roomId, pictureId) VALUES (?, ?)";
+        foreach ($picture as $key => $value) {
+            $res = update($sql, [$id, $value], 'ii');
+        }
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQUEST['action'] === 'hapusKamar') {
     $data = $_POST;
     $id = $data['hapus_id'];
+
+    $sql = "DELETE FROM pictureonroom WHERE roomId = ?";
+    $res = update($sql, [$id], 'i');
 
     $sql = "DELETE FROM facilityonroom WHERE roomId = ?";
     $res = update($sql, [$id], 'i');

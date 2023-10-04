@@ -84,104 +84,118 @@
             $room = new Room();
             $rooms = $room->getRoom();
 
-            echo json_encode($rooms);
+            // get room facility
+            $facility = new Facility();
+            foreach ($rooms as $key => $value) {
+                $rooms[$key]['facility'] = $facility->getFacilityByRoomId($value['id']);
 
-            // $sql = "SELECT * FROM room";
-            // $res = mysqli_query($conn, $sql);
-            // while ($row = mysqli_fetch_assoc($res)) {
-            //     $data[] = $row;
-            // }
-            // $facility = [];
-            // $capacity = [];
-            
-            // foreach ($data as $key => $value) {
-            //     $sql = "SELECT * FROM facilityonroom WHERE roomId = ?";
-            //     $res = select($sql, [$value['id']], 'i');
-            //     while ($row = mysqli_fetch_assoc($res)) {
-            //         $facility[] = $row;
-            //     }
-            //     $data[$key]['facility'] = $facility;
-            //     $facility = [];
-            
-            //     $sql = "SELECT * FROM capacityonroom WHERE roomId = ?";
-            //     $res = select($sql, [$value['id']], 'i');
-            //     while ($row = mysqli_fetch_assoc($res)) {
-            //         $capacity[] = $row;
-            //     }
-            //     $data[$key]['capacity'] = $capacity;
-            //     $capacity = [];
-            // }
-            
-            // foreach ($data as $key => $value) {
-            //     foreach ($value['facility'] as $k => $v) {
-            //         $sql = "SELECT * FROM facility WHERE id = ?";
-            //         $res = select($sql, [$v['facilityId']], 'i');
-            //         while ($row = mysqli_fetch_assoc($res)) {
-            //             $facility[] = $row;
-            //         }
-            //     }
-            //     $data[$key]['facility'] = $facility;
-            //     $facility = [];
-            // }
-            
-            // foreach ($data as $key => $value) {
-            //     foreach ($value['capacity'] as $k => $v) {
-            //         $sql = "SELECT * FROM capacity WHERE id = ?";
-            //         $res = select($sql, [$v['capacityId']], 'i');
-            //         while ($row = mysqli_fetch_assoc($res)) {
-            //             $capacity[] = $row;
-            //         }
-            //     }
-            //     $data[$key]['capacity'] = $capacity;
-            //     $capacity = [];
-            // }
-            
-            // foreach ($data as $key => $value) {
-            //     $html = '<div class="col-lg-4 col-md-6 my-3">  ';
-            //     $html .= '<div class="card border-0 shadow" style="max-width: 350px; margin: auto;">';
-            //     $html .= '<img height=200 src="./assets/images/room/' . $value['picture'] . '" class="card-img-top">';
-            //     $html .= '<div class="card-body">';
-            //     $html .= '<h5>' . $value['name'] . '</h5>';
-            //     $html .= '<h6 class="mb-4">Rp ' . $value['price'] . ' / malam</h6>';
-            //     $html .= '<div class="features mb-4">';
-            //     $html .= '<h6 class="mb-1">Features</h6>';
-            //     foreach ($value['facility'] as $k => $v) {
-            //         $html .= '<span class="badge rounded-pill bg-light text-dark text-wrap">';
-            //         $html .= $v['name'];
-            //         $html .= '</span>';
-            //     }
-            //     $html .= '</div>';
-            //     $html .= '<div class="facilities mb-4">';
-            //     $html .= '<h6 class="mb-1">Facilities</h6>';
-            //     foreach ($value['capacity'] as $k => $v) {
-            //         $html .= '<span class="badge rounded-pill bg-light text-dark text-wrap">';
-            //         $html .= $v['name'];
-            //         $html .= '</span>';
-            //     }
-            //     $html .= '</div>';
-            //     $html .= '<div class="guests mb-4">';
-            //     $html .= '<h6 class="mb-1">Guests</h6>';
-            //     $html .= '<span class="badge rounded-pill bg-light text-dark text-wrap">';
-            //     $html .= $value['capacity'][0]['description'];
-            //     $html .= '</span>';
-            //     $html .= '</div>';
-            //     $html .= '<div class="rating mb-4">';
-            //     $html .= '<h6 class="mb-1">Rating</h6>';
-            //     $html .= '<span class="badge rounded-pill bg-light">';
-            //     for ($i = 0; $i < $value['rating']; $i++) {
-            //         $html .= '<i class="bi bi-star-fill text-warning"></i>';
-            //     }
-            //     $html .= '</span>';
-            //     $html .= '</div>';
-            //     $html .= '<div class="d-flex justify-content-evenly mb-2s">';
-            //     $html .= "<a href='details?type=room&id=$value[id]' class='btn btn-sm text-white custom-bg shadow-none'>Book Now</a>";
-            //     $html .= '</div>';
-            //     $html .= '</div>';
-            //     $html .= '</div>';
-            //     $html .= '</div>';
-            //     echo $html;
-            // }
+            }
+
+            // get real facility data from database
+            foreach ($rooms as $key => $value) {
+                foreach ($value['facility'] as $k => $v) {
+                    $rooms[$key]['facility'][$k] = $facility->getFacilityById($v['facilityId']);
+                }
+            }
+
+            // get room capacity
+            $capacity = new Capacity();
+            foreach ($rooms as $key => $value) {
+                $rooms[$key]['capacity'] = $capacity->getCapacityByRoomId($value['id']);
+            }
+
+            // get real capacity data from database
+            foreach ($rooms as $key => $value) {
+                foreach ($value['capacity'] as $k => $v) {
+                    $rooms[$key]['capacity'][$k] = $capacity->getCapacityById($v['capacityId']);
+                }
+            }
+
+            // get room picture
+            $picture = new Picture();
+            foreach ($rooms as $key => $value) {
+                $rooms[$key]['picture'] = $picture->getPictureByRoomId($value['id']);
+            }
+
+            // get real picture data from database
+            foreach ($rooms as $key => $value) {
+                foreach ($value['picture'] as $k => $v) {
+                    $rooms[$key]['picture'][$k] = $picture->getPictureById($v['pictureId']);
+                }
+            }
+
+            // get rule on room
+            $rule = new Rule();
+            foreach ($rooms as $key => $value) {
+                $rooms[$key]['rule'] = $rule->getRuleByRoomId($value['id']);
+            }
+
+            // get real rule data from database
+            foreach ($rooms as $key => $value) {
+                foreach ($value['rule'] as $k => $v) {
+                    $rooms[$key]['rule'][$k] = $rule->getRuleById($v['ruleId']);
+                }
+            }
+
             ?>
+            <?php foreach ($rooms as $r): ?>
+                <div class="col-lg-4 col-md-6 my-3">
+                    <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
+                        <!-- carousel -->
+                        <div style="height: 200px; overflow: hidden;">
+                            <div id="carouselExampleControls<?= $r['id'] ?>" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <?php foreach ($r['picture'] as $key => $value): ?>
+                                        <div class="carousel-item <?= $key === 0 ? 'active' : '' ?>">
+                                            <img src="./assets/images/room/<?= $value[0]['name'] ?>" class="d-block w-100"
+                                                alt="...">
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#carouselExampleControls<?= $r['id'] ?>" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleControls<?= $r['id'] ?>" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <h5>
+                                <?= $r['name'] ?>
+                            </h5>
+                            <h6 class="mb-4">Rp
+                                <?= number_format($r['price'], 0, ',', '.') ?> / night
+                            </h6>
+                            <div class="facilities mb-4">
+                                <h6 class="mb-1">Facilities</h6>
+                                <?php foreach ($r['facility'] as $key => $value): ?>
+                                    <span class="badge rounded-pill bg-light text-dark text-wrap">
+                                        <?= $value[0]['name'] ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="guests mb-4">
+                                <h6 class="mb-1">Guests</h6>
+                                <span class="badge rounded-pill bg-light text-dark text-wrap">
+                                    <?= $r['capacity'][0][0]['description'] ?>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-evenly mb-2s">
+                                <a href='details?type=room&id=<?= $r['id'] ?>'
+                                    class='btn btn-sm text-white custom-bg shadow-none'>Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
 
         </div>
     </div>
@@ -198,22 +212,22 @@
             $res = select($sql, [1], 'i');
 
             foreach ($res as $row) {
-                echo "<div class='col-lg-2 col-md-2 text-center bg-white rounded shadow py-4 my-3'>
-                <img src='./assets/images/facility/" . $row['picture'] . "' height=100>
-                <h5 class='mt-3'>" . $row['name'] . "</h5>  
-            </div>";
+                echo "<div class='col-lg-2 col-md-2 text-center bg-white rounded shadow py-4 my-3'>";
+                echo "<img src='./assets/images/facility/" . $row['picture'] . "' height=100 width=125>";
+                echo "<h5 class='mt-3'>" . $row['name'] . "</h5>";
+                echo "</div>";
             }
             ?>
 
-            <div class="co-lg-12 text-center mt-5">
+            <!-- <div class="co-lg-12 text-center mt-5">
                 <a href="#" class="btn btn-sm btn-outline-dark rounded-0 fw-bold shadow-none">More Facilities >>></a>
-            </div>
+            </div> -->
         </div>
     </div>
 
     <!-- Testimoni -->
 
-    <h2 class="mt-5 pt-4 mb-4 text-center fw-bold h-font">Our Facilities</h2>
+    <!-- <h2 class="mt-5 pt-4 mb-4 text-center fw-bold h-font">Review</h2>
     <div class="contaier mt-5">
         <div class="swiper swiper-testimoni">
             <div class="swiper-wrapper">
@@ -277,7 +291,7 @@
     </div>
     <div class="co-lg-12 text-center mt-5">
         <a href="#" class="btn btn-sm btn-outline-dark rounded-0 fw-bold shadow-none">Know More >>></a>
-    </div>
+    </div> -->
 
     <!-- Reach Us -->
     <h2 class="mt-5 pt-4 mb-4 text-center fw-bold h-font">Reach Us</h2>

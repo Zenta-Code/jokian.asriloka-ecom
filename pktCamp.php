@@ -54,26 +54,52 @@
                             }
 
                             foreach ($bundling as $key => $value) {
-                                // echo  name ,price, facility, picture as html
+                                $sql = "SELECT * FROM pictureonbundling WHERE bundlingId = ?";
+                                $res = select($sql, [$value['id']], 'i');
+                                while ($row = mysqli_fetch_assoc($res)) {
+                                    $picture[] = $row;
+                                }
+                                $bundling[$key]['picture'] = $picture;
+                                $picture = [];
+                            }
+                            foreach ($bundling as $key => $value) {
+                                foreach ($value['picture'] as $k => $v) {
+                                    $sql = "SELECT * FROM picture WHERE id = ?";
+                                    $res = select($sql, [$v['pictureId']], 'i');
+                                    while ($row = mysqli_fetch_assoc($res)) {
+                                        $picture[] = $row;
+                                    }
+                                }
+                                $bundling[$key]['pictures'] = $picture;
+                                $picture = [];
+                            }
+
+
+                            foreach ($bundling as $key => $value) {
+                                // echo name, price, facility, and picture carousel as HTML
                                 $html = "<div class='card mb-4 border-0 shadow'>";
                                 $html .= "<div class='row g-0 p-3 align-items-center'>";
                                 $html .= "<div class='col-md-5 mb-lg-0 mb-md-0 mb-3'>";
                                 $html .= "<div id='carousel$value[id]' class='carousel slide'>";
                                 $html .= "<div class='carousel-indicators'>";
-                                $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='0' class='active' aria-current='true' aria-label='Slide 1'></button>";
-                                $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='1' aria-label='Slide 2'></button>";
-                                $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='2' aria-label='Slide 3'></button>";
+
+                                // Output carousel indicators
+                                for ($i = 0; $i < count($value['pictures']); $i++) {
+                                    $activeClass = ($i === 0) ? 'active' : '';
+                                    $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='$i' class='$activeClass' aria-current='true' aria-label='Slide $i'></button>";
+                                }
+
                                 $html .= "</div>";
                                 $html .= "<div class='carousel-inner'>";
-                                $html .= "<div class='carousel-item active'>";
-                                $html .= "<img src='./assets/images/bundling/$value[picture]' class='d-block w-100' alt='...'>";
-                                $html .= "</div>";
-                                $html .= "<div class='carousel-item'>";
-                                $html .= "<img src='./assets/images/bundling/$value[picture]' class='d-block w-100' alt='...'>";
-                                $html .= "</div>";
-                                $html .= "<div class='carousel-item'>";
-                                $html .= "<img src='./assets/images/bundling/$value[picture]' class='d-block w-100' alt='...'>";
-                                $html .= "</div>";
+
+                                // Output carousel images
+                                foreach ($value['pictures'] as $i => $picture) {
+                                    $activeClass = ($i === 0) ? 'active' : '';
+                                    $html .= "<div class='carousel-item $activeClass'>";
+                                    $html .= "<img src='./assets/images/bundling/{$picture['name']}' class='d-block w-100' alt='...'>";
+                                    $html .= "</div>";
+                                }
+
                                 $html .= "</div>";
                                 $html .= "<button class='carousel-control-prev' type='button' data-bs-target='#carousel$value[id]' data-bs-slide='prev'>";
                                 $html .= "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
@@ -89,22 +115,20 @@
                                 $html .= "<h5 class='mb-3'>$value[name]</h5>";
                                 $html .= "<div class='facilities mb-3'>";
                                 $html .= "<h6 class='mb-1'>Fasilitas Kamar</h6>";
-                                for ($i = 0; $i < count($value['facility']); $i++) {
+                                foreach ($value['facility'] as $facility) {
                                     $html .= "<span class='badge rounded-pill bg-light text-dark text-wrap'>";
-                                    $html .= $value['facility'][$i]['name'];
+                                    $html .= $facility['name'];
                                     $html .= "</span>";
                                 }
                                 $html .= "</div>";
                                 $html .= "</div>";
                                 $html .= "<div class='col-md-3 text-center'>";
                                 $html .= "<h6 class='mb-4'>Rp $value[price]/malam</h6>";
-                                $html .= "<a href='details.php' class='btn btn-sm w-100 text-white custom-bg shadow-none mb-2'>Book Now</a>"; 
+                                $html .= "<a href='details?type=paketCAMP&id=$value[id]' class='btn btn-primary'>Book Now</a>";
                                 $html .= "</div>";
                                 $html .= "</div>";
                                 $html .= "</div>";
                                 echo $html;
-
-
                             }
                             ?>
                         </div>

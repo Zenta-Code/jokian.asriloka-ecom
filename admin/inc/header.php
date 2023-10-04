@@ -12,9 +12,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="dashboard">Dashboard</a>
                 </li>
-                <li class="nav-item me-2">
+                <!-- <li class="nav-item me-2">
                     <a class="nav-link" href="#">Users</a>
-                </li>
+                </li> -->
                 <li class="nav-item me-2">
                     <a class="nav-link" href="facilities">Fasilitas</a>
                 </li>

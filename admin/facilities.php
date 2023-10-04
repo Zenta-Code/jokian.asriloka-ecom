@@ -61,12 +61,19 @@
                                     <textarea class="form-control" id="deskripsi_fasilitas" name="deskripsi_fasilitas"
                                         required></textarea>
                                 </div>
+                                <div class="form-check">
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                        Umum?
+                                    </label>
+                                    <input class="form-check-input" type="checkbox" id="isGeneral" name="isGeneral"
+                                        checked>
+
+                                </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
                                     <button id="add_fasilitas" type="submit" class="btn btn-primary"
-                                        data-bs-dismiss="modal">Save
-                                        changes</button>
+                                        data-bs-dismiss="modal">Add Facility</button>
                                 </div>
                             </form>
                         </div>
@@ -89,6 +96,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Umum</th>
                                 <th class='w-25'>Gambar</th>
                                 <th>Nama Fasilitas</th>
                                 <th>Deskripsi</th>
@@ -128,7 +136,13 @@
                                                     <textarea class="form-control" id="edit_description"
                                                         name="edit_description" required></textarea>
                                                 </div>
-
+                                                <div class="form-check">
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Umum?
+                                                    </label>
+                                                    <input class="form-check-input" type="checkbox" id="edit_isGeneral"
+                                                        name="edit_isGeneral">
+                                                </div>
                                                 <button type="submit" name="edit" data-bs-dismiss="modal"
                                                     class="btn btn-primary w-100 mt-1">Simpan</button>
                                             </form>
@@ -167,7 +181,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </tbody>
                     </table>
                 </div>
@@ -177,7 +190,139 @@
 
 
     <?php require('inc/scripts.php'); ?>
-    <script src="../assets/js/fasilitas.js"></script>
+    <!-- <script src="../assets/js/fasilitas.js"></script> -->
+    <script>
+        $(document).ready(function () {
+            function loadFasilitasData() {
+                $.ajax({
+                    url: "ajax/fasilitas.php?action=loadUmum",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        html = "";
+                        for (var i = 0; i < data.length; i++) {
+                            html += "<tr>";
+
+                            html += "<td>" + (i + 1) + "</td>";
+                            if (data[i].isGeneral == 1) {
+                                html += "<td class='text-center'> <i class='bi bi-check-circle-fill text-success'></i></td>";
+                            } else {
+                                html += "<td class='text-center'> <i class='bi bi-x-circle-fill text-danger'></i></td>";
+                            }
+                            html +=
+                                "<td class='w-25'> <img class='rounded img-thumbnail' src='./../assets/images/facility/" +
+                                data[i].picture +
+                                "' width='124' height='124'></td>";
+                            html += "<td>" + data[i].name + "</td>";
+                            html += "<td>" + data[i].description + "</td>";
+                            html += "<td>";
+                            html +=
+                                "<button type='button' data-bs-toggle='modal' data-bs-target='#staticBackdropFasilitasEdit' class='btn btn-primary me-2 pop' data-id='" +
+                                data[i].id +
+                                "' data-name='" +
+                                data[i].name +
+                                "' data-isGeneral='" +
+                                data[i].isGeneral +
+                                "' data-description='" +
+                                data[i].description +
+                                "' data-picture='" +
+                                data[i].picture +
+                                "'>Edit</button>";
+                            html +=
+                                "<button type='button' data-bs-toggle='modal' data-bs-target='#staticBackdropFasilitasHapus' class='btn btn-danger pop' data-id='" +
+                                data[i].id +
+                                "' data-name='" +
+                                data[i].name +
+                                "' data-description='" +
+                                data[i].description +
+                                "'>Delete</button>";
+                            html += "</td>";
+                            html += "</tr>";
+
+                        }
+                        $("#fasilitasTable").html(html);
+                    },
+                });
+            }
+            loadFasilitasData();
+            $(document).on(
+                "click",
+                "button[data-bs-target='#staticBackdropFasilitasEdit']",
+                function () {
+                    var name = $(this).data("name");
+                    var description = $(this).data("description");
+                    var images = $(this).data("picture");
+                    var id = $(this).data("id");
+                    var isGeneral = $(this).data("isgeneral");
+                    $("#edit_nama").val(name);
+                    $("#edit_description").val(description);
+                    $("#edit_id").val(id);
+                    $("#edit_image").val(images);
+                    $("#edit_isGeneral").prop("checked", isGeneral == 1);
+                }
+            );
+            $(document).on(
+                "click",
+                "button[data-bs-target='#staticBackdropFasilitasHapus']",
+                function () {
+                    var name = $(this).data("name");
+                    var id = $(this).data("id");
+                    $("#hapus_id").val(id);
+                    $("#hapus_nama").text(name);
+                }
+            );
+            $("#tambahFasilitasUmum").on("submit", function (e) {
+                var formData = new FormData(this);
+                e.preventDefault();
+                $.ajax({
+                    url: "ajax/fasilitas.php?action=tambahFasilitasUmum",
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        $("#tambahFasilitasUmum")[0].reset();
+                        loadFasilitasData();
+                    },
+                });
+            });
+            $("#editFasilitasUmum").on("submit", function (e) {
+                var formData = new FormData(this);
+                console.log(formData);
+                e.preventDefault();
+                $.ajax({
+                    url: "ajax/fasilitas.php?action=editFasilitasUmum",
+                    type: "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        $("#editFasilitasUmum")[0].reset();
+                        loadFasilitasData();
+                    },
+                });
+            });
+            $("#hapusFasilitasUmum").on("submit", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "ajax/fasilitas.php?action=hapusFasilitasUmum",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        console.log(response);
+                        $("#hapusFasilitasUmum")[0].reset();
+                        loadFasilitasData();
+                    },
+                });
+            });
+        });
+
+    </script>
 
 </body>
 

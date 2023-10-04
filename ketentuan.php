@@ -30,7 +30,7 @@
                                     <?php
 
                                     $rule = new Rule();
-                                    $res = $rule->getRule();
+                                    $res = $rule->getRuleByPublicity(1);
 
                                     foreach ($res as $r) {
                                         echo "<li>" . $r['description'] . "</li>";

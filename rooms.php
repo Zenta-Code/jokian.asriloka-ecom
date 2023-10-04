@@ -77,6 +77,7 @@
                     $room[$key]['facility'] = $facility;
                     $facility = [];
                 }
+
                 foreach ($room as $key => $value) {
                     foreach ($value['facility'] as $k => $v) {
                         $sql = "SELECT * FROM facility WHERE id = ?";
@@ -90,25 +91,51 @@
                 }
 
                 foreach ($room as $key => $value) {
+                    $sql = "SELECT * FROM pictureonroom WHERE roomId = ?";
+                    $res = select($sql, [$value['id']], 'i');
+                    while ($row = mysqli_fetch_assoc($res)) {
+                        $picture[] = $row;
+                    }
+                    $room[$key]['picture'] = $picture;
+                    $picture = [];
+                }
+
+                foreach ($room as $key => $value) {
+                    foreach ($value['picture'] as $k => $v) {
+                        $sql = "SELECT * FROM picture WHERE id = ?";
+                        $res = select($sql, [$v['pictureId']], 'i');
+                        while ($row = mysqli_fetch_assoc($res)) {
+                            $picture[] = $row;
+                        }
+                    }
+                    $room[$key]['pictures'] = $picture;
+                    $picture = [];
+                }
+
+
+                foreach ($room as $key => $value) {
                     $html = "<div class='card mb-4 border-0 shadow'>";
                     $html .= "<div class='row g-0 p-3 align-items-center'>";
                     $html .= "<div class='col-md-5 mb-lg-0 mb-md-0 mb-3'>";
                     $html .= "<div id='carousel$value[id]' class='carousel slide'>";
                     $html .= "<div class='carousel-indicators'>";
-                    $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='0' class='active' aria-current='true' aria-label='Slide 1'></button>";
-                    $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='1' aria-label='Slide 2'></button>";
-                    $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='2' aria-label='Slide 3'></button>";
+
+                    // Output carousel indicators
+                    for ($i = 0; $i < count($value['pictures']); $i++) {
+                        $html .= "<button type='button' data-bs-target='#carousel$value[id]' data-bs-slide-to='$i' class='active' aria-current='true' aria-label='Slide $i'></button>";
+                    }
+
                     $html .= "</div>";
                     $html .= "<div class='carousel-inner'>";
-                    $html .= "<div class='carousel-item active'>";
-                    $html .= "<img src='./assets/images/room/$value[picture]' class='d-block w-100' alt='...'>";
-                    $html .= "</div>";
-                    $html .= "<div class='carousel-item'>";
-                    $html .= "<img src='./assets/images/room/$value[picture]' class='d-block w-100' alt='...'>";
-                    $html .= "</div>";
-                    $html .= "<div class='carousel-item'>";
-                    $html .= "<img src='./assets/images/room/$value[picture]' class='d-block w-100' alt='...'>";
-                    $html .= "</div>";
+
+                    foreach ($value['pictures'] as $i => $picture) {
+                        $html .= "<div class='carousel-item ";
+                        $html .= ($i === 0) ? 'active' : '';
+                        $html .= "'>";
+                        $html .= "<img src='assets/images/room/$picture[name]' class='d-block w-100' alt='...'>";
+                        $html .= "</div>";
+                    }
+
                     $html .= "</div>";
                     $html .= "<button class='carousel-control-prev' type='button' data-bs-target='#carousel$value[id]' data-bs-slide='prev'>";
                     $html .= "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
@@ -118,6 +145,8 @@
                     $html .= "<span class='carousel-control-next-icon' aria-hidden='true'></span>";
                     $html .= "<span class='visually-hidden'>Next</span>";
                     $html .= "</button>";
+
+
                     $html .= "</div>";
                     $html .= "</div>";
                     $html .= "<div class='col-md-4 px-lg-3 px-md-3 px-0'>";

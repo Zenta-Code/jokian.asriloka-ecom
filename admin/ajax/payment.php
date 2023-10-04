@@ -104,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQUEST['action'] === 'konfirmasi') {
     $data = $_POST;
+    echo json_encode($data);
     $user = $data['user_id'];
     $room = $data['room_id'];
     $check_in = $data['check_in'];
@@ -111,9 +112,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
 
     $conn = $GLOBALS['conn'];
 
-    $sql = "INSERT INTO booking (userId, roomId, checkIn, checkOut) VALUES (?, ?, ?, ?)";
-    $res = update($sql, [$user, $room, $check_in, $check_out], 'iiss');
+    if ($data['type_bundling'] == 'room') {
+        $sql = "INSERT INTO booking (userId, roomId, checkIn, checkOut,totalPrice) VALUES (?, ?, ?, ?,?)";
+        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price']], 'iissi');
+    } else {
+        $sql = "INSERT INTO booking (userId, bundlingId, checkIn, checkOut,totalPrice) VALUES (?, ?, ?, ?,?)";
+        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price']], 'iissi');
 
+    }
     if ($res) {
         $message = "Booking was successful!";
         $class = "success";
@@ -126,17 +132,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $res = mysqli_query($conn, $sql);
     $user = mysqli_fetch_assoc($res);
     unset($user['password']);
+    if ($data['type_bundling'] == 'room') {
+        $sql = "SELECT * FROM room WHERE id = $room";
+        $res = mysqli_query($conn, $sql);
+        $room = mysqli_fetch_assoc($res);
 
-    $sql = "SELECT * FROM room WHERE id = $room";
-    $res = mysqli_query($conn, $sql);
-    $room = mysqli_fetch_assoc($res);
+        $sql = "SELECT * FROM booking WHERE userId = $user[id] AND roomId = $room[id] AND checkIn = '$check_in' AND checkOut = '$check_out'";
+        $res = mysqli_query($conn, $sql);
+        $booking = mysqli_fetch_assoc($res);
+    } else {
+        $sql = "SELECT * FROM bundling WHERE id = $room";
+        $res = mysqli_query($conn, $sql);
+        $room = mysqli_fetch_assoc($res);
 
-    $sql = "SELECT * FROM booking WHERE userId = $user[id] AND roomId = $room[id] AND checkIn = '$check_in' AND checkOut = '$check_out'";
-    $res = mysqli_query($conn, $sql);
-    $booking = mysqli_fetch_assoc($res);
+        $sql = "SELECT * FROM booking WHERE userId = $user[id] AND bundlingId = $room[id] AND checkIn = '$check_in' AND checkOut = '$check_out'";
+        $res = mysqli_query($conn, $sql);
+        $booking = mysqli_fetch_assoc($res);
+    }
 
 
-    header("Location: ./../../user/invoice.php?booking_id=$booking[id]&user_id=$user[id]&room_id=$room[id]&check_in=$check_in&check_out=$check_out&message=$message&class=$class");
+    // header("Location: ./../../user/invoice.php?booking_id=$booking[id]&user_id=$user[id]&room_id=$room[id]&check_in=$check_in&check_out=$check_out&message=$message&class=$class");
+
+    redirect("../../pemesanan");
+    sleep(3);
+    $_SESSION["sukses"] = 'Segera lakukan pembayaran sebelum tanggal ' . $booking['checkIn'] . ' dengan total harga Rp. ' . $data['total_price'] . ' ke nomor rekening 1234567890 atas nama Asriloka.';
 
 }
 

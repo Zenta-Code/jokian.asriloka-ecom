@@ -22,17 +22,17 @@
 <body class="bg-light">
     <?php require('inc/header.php');
     $facility = new Facility();
-    $facilties = $facility->getFacility();
+    $facilties = $facility->getFacilityByPublicity(1);
     ?>
     <div class="my-5 px-4">
         <h2 class="fw-bold h-font text-center">Our Facilities</h2>
         <hr>
-        <p class="text-center mt-3">
+        <!-- <p class="text-center mt-3">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus odit architecto sunt ratione
             voluptate, fugit maxime odio animi asperiofacilties deserunt harum, ipsam molestiae fuga numquam tenetur et
             labore
             aspernatur? Quas?
-        </p>
+        </p> -->
     </div>
 
     <div class="container">

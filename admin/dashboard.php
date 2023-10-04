@@ -43,6 +43,7 @@ adminLogin();
                                     <th class="text-center">ID</th>
                                     <th class="text-center">Check In</th>
                                     <th class="text-center">Check Out</th>
+                                    <th class="text-center">Status</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -55,11 +56,20 @@ adminLogin();
                                 }
 
                                 foreach ($booking as $key => $value) {
-                                    $sql = "SELECT * FROM room WHERE id = ?";
-                                    $res = select($sql, [$value['roomId']], 'i');
-                                    while ($row = mysqli_fetch_assoc($res)) {
-                                        $room[] = $row;
+                                    if ($value['roomId'] != null) {
+                                        $sql = "SELECT * FROM room WHERE id = ?";
+                                        $res = select($sql, [$value['roomId']], 'i');
+                                        while ($row = mysqli_fetch_assoc($res)) {
+                                            $room[] = $row;
+                                        }
+                                    } else {
+                                        $sql = "SELECT * FROM bundling WHERE id = ?";
+                                        $res = select($sql, [$value['bundlingId']], 'i');
+                                        while ($row = mysqli_fetch_assoc($res)) {
+                                            $room[] = $row;
+                                        }
                                     }
+
                                 }
 
                                 foreach ($booking as $key => $value) {
@@ -86,18 +96,20 @@ adminLogin();
                                     foreach ($room as $k => $v) {
                                         if ($v['id'] == $value['roomId']) {
                                             $html .= "$v[name]";
+                                            break;
+                                        }
+                                        if ($v['id'] == $value['bundlingId']) {
+                                            $html .= "$v[name]";
+                                            break;
                                         }
                                     }
                                     $html .= "</td>";
                                     $html .= "<td class='text-center'>$value[id]</td>";
-                                    $html .= "<td class='text-center'>$value[checkIn]</td>";
-                                    $html .= "<td class='text-center'>$value[checkOut]</td>";
-
+                                    $html .= "<td class='text-center'>" . date('Y-m-d', strtotime($value['checkIn'])) . "</td>";
+                                    $html .= "<td class='text-center'>" . date('Y-m-d', strtotime($value['checkOut'])) . "</td>";
+                                    $html .= "<td class='text-center'>$value[status]</td>";
                                     $html .= "<td class='text-center'>";
-                                    $html .= "<button type='button' class='btn btn-primary' data-bs-toggle='modal' 
-                                    data-bs-id = '$value[id]'
-                                    data-bs-target='#viewModal'>View</button>";
-                                    $html .= "<button type='button' class='btn btn-success' data-bs-toggle='' data-bs-target='#'><i class='bi bi-check2-square'></i></button>";
+                                    $html .= "<button type='button' class='btn btn-primary view-button' data-bs-toggle='modal' data-bs-target='#viewModal' data-bs-id='$value[id]'>View</button>";
                                     $html .= "</td>";
                                     $html .= "</tr>";
                                 }
@@ -118,49 +130,28 @@ adminLogin();
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <!-- form to update status -->
+                            <form id="updateStatus" method="POST">
 
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status Of Booking</label>
+                                    <span>Booking ID : </span> <span id="modalId"></span>
+                                    <input type="hidden" name="id" id="modalIdInput">
+                                    <select class="form-select" name="status" id="status">
+                                        <option value="BOOKED">Booked</option>
+                                        <option value="CHECKEDIN">Checked In</option>
+                                        <option value="CHECKEDOUT">Checked Out</option>
+                                        <option value="CANCELLED">Cancelled</option>
+                                    </select>
+                                </div>
 
-                            <table>
-                                <tbody>
-                                    <?php
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            </form>
 
-                                    $html = '';
-                                    foreach ($booking as $key => $value) {
-                                        $html .= "<tr>";
-                                        $html .= "<th scope='row'>$key</th>";
-                                        $html .= "<td class='text-center'>";
-                                        foreach ($user as $k => $v) {
-                                            if ($v['id'] == $value['userId']) {
-                                                $html .= "$v[name]";
-                                            }
-                                        }
-                                        $html .= "</td>";
-                                        $html .= "<td class='text-center'>";
-                                        foreach ($room as $k => $v) {
-                                            if ($v['id'] == $value['roomId']) {
-                                                $html .= "$v[name]";
-                                            }
-                                        }
-                                        $html .= "</td>";
-                                        $html .= "<td class='text-center'>$value[id]</td>";
-                                        $html .= "<td class='text-center'>$value[checkIn]</td>";
-                                        $html .= "<td class='text-center'>$value[checkOut]</td>";
-
-                                        $html .= "<td class='text-center'>";
-                                        $html .= "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#viewModal'>View</button>";
-                                        $html .= "<button type='button' class='btn btn-success' data-bs-toggle='' data-bs-target='#'><i class='bi bi-check2-square'></i></button>";
-                                        $html .= "</td>";
-                                        $html .= "</tr>";
-                                    }
-                                    echo $html;
-                                    ?>
-                                </tbody>
-                            </table>
-
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -168,6 +159,57 @@ adminLogin();
 
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var viewButtons = document.querySelectorAll('.view-button');
+
+            viewButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var id = button.getAttribute('data-bs-id');
+                    console.log("BUTTON CLICKED");
+                    console.log(id);
+                    document.getElementById('modalIdInput').value = id;
+                    document.getElementById('modalId').innerHTML = id;
+                });
+            });
+            $('#updateStatus').submit(function (e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                console.log(formData);
+                $.ajax({
+                    type: 'POST',
+                    url: 'ajax/updateStatus.php',
+                    data: formData,
+                    success: function (response) {
+                        console.log(response);
+                        var data = JSON.parse(response);
+                        if (data.status == 'success') {
+                            showSwal();
+                            setTimeout(function () {
+                                location.reload();
+                            }, 3000);
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Status Update Failed',
+                                icon: 'error',
+                                confirmButtonText: 'Ok'
+                            })
+                        }
+                    }
+                });
+            });
+
+            function showSwal() {
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Status Updated',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                })
+            }
+        });
+    </script>
 
     <?php require('inc/scripts.php'); ?>
 </body>

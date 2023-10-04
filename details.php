@@ -28,59 +28,57 @@
         }
 
         if ($type == 'room') {
-            $sql = "SELECT * FROM room WHERE id =  $id";
+            // Fetch room details using a single query
+            $sql = "SELECT * FROM room WHERE id = $id";
             $res = mysqli_query($conn, $sql);
             $room = mysqli_fetch_assoc($res);
 
-            $sql = "SELECT * FROM facilityonroom WHERE roomId = $id";
+            // Fetch facility details using JOIN query
+            $sql = "SELECT f.* FROM facilityonroom fr
+            JOIN facility f ON fr.facilityId = f.id
+            WHERE fr.roomId = $id";
             $res = mysqli_query($conn, $sql);
+            $facility = [];
             while ($row = mysqli_fetch_assoc($res)) {
                 $facility[] = $row;
             }
 
-            foreach ($facility as $key => $value) {
-                $sql = "SELECT * FROM facility WHERE id = ?";
-                $res = select($sql, [$value['facilityId']], 'i');
-                while ($row = mysqli_fetch_assoc($res)) {
-                    $facility[$key] = $row;
-
-                }
+            // Fetch picture details using JOIN query
+            $sql = "SELECT p.* FROM pictureonroom pr
+            JOIN picture p ON pr.pictureId = p.id
+            WHERE pr.roomId = $id";
+            $res = mysqli_query($conn, $sql);
+            $picture = [];
+            while ($row = mysqli_fetch_assoc($res)) {
+                $picture[] = $row;
             }
 
-            $sql = "SELECT * FROM ruleonroom WHERE roomId = ?";
-            $res = select($sql, [$id], 'i');
+            // Fetch rule details using JOIN query
+            $sql = "SELECT r.* FROM ruleonroom rr
+            JOIN rule r ON rr.ruleId = r.id
+            WHERE rr.roomId = $id";
+            $res = mysqli_query($conn, $sql);
+            $rule = [];
             while ($row = mysqli_fetch_assoc($res)) {
                 $rule[] = $row;
             }
 
-            foreach ($rule as $key => $value) {
-                $sql = "SELECT * FROM rule WHERE id = ?";
-                $res = select($sql, [$value['ruleId']], 'i');
-                while ($row = mysqli_fetch_assoc($res)) {
-                    $rule[$key] = $row;
-
-                }
-            }
-
-            $sql = "SELECT * FROM capacityonroom WHERE roomId = ?";
-            $res = select($sql, [$id], 'i');
+            // Fetch capacity details using JOIN query
+            $sql = "SELECT c.* FROM capacityonroom cr
+            JOIN capacity c ON cr.capacityId = c.id
+            WHERE cr.roomId = $id";
+            $res = mysqli_query($conn, $sql);
+            $capacity = [];
             while ($row = mysqli_fetch_assoc($res)) {
                 $capacity[] = $row;
             }
 
-            foreach ($capacity as $key => $value) {
-                $sql = "SELECT * FROM capacity WHERE id = ?";
-                $res = select($sql, [$value['capacityId']], 'i');
-                while ($row = mysqli_fetch_assoc($res)) {
-                    $capacity[$key] = $row;
-
-                }
-            }
             $data = [
                 'room' => $room,
                 'facility' => $facility,
                 'rule' => $rule,
-                'capacity' => $capacity
+                'capacity' => $capacity,
+                'picture' => $picture
             ];
 
             $html = "<div class='card mb-4 border-0 shadow'>";
@@ -88,20 +86,30 @@
             $html .= "<div class='col-md-5 mb-lg-0 mb-md-0 mb-3'>";
             $html .= "<div id='carousel$room[id]' class='carousel slide'>";
             $html .= "<div class='carousel-indicators'>";
-            $html .= "<button type='button' data-bs-target='#carousel$room[id]' data-bs-slide-to='0' class='active' aria-current='true' aria-label='Slide 1'></button>";
-            $html .= "<button type='button' data-bs-target='#carousel$room[id]' data-bs-slide-to='1' aria-label='Slide 2'></button>";
-            $html .= "<button type='button' data-bs-target='#carousel$room[id]' data-bs-slide-to='2' aria-label='Slide 3'></button>";
+
+            // Carousel indicators should be generated dynamically
+            for ($i = 0; $i < count($picture); $i++) {
+                $html .= "<button type='button' data-bs-target='#carousel$room[id]' data-bs-slide-to='$i'";
+                if ($i == 0) {
+                    $html .= " class='active'";
+                }
+                $html .= " aria-label='Slide $i'></button>";
+            }
+
             $html .= "</div>";
             $html .= "<div class='carousel-inner'>";
-            $html .= "<div class='carousel-item active'>";
-            $html .= "<img src='./assets/images/room/$room[picture]' class='d-block w-100' alt='...'>";
-            $html .= "</div>";
-            $html .= "<div class='carousel-item'>";
-            $html .= "<img src='./assets/images/room/$room[picture]' class='d-block w-100' alt='...'>";
-            $html .= "</div>";
-            $html .= "<div class='carousel-item'>";
-            $html .= "<img src='./assets/images/room/$room[picture]' class='d-block w-100' alt='...'>";
-            $html .= "</div>";
+
+            // Iterate through pictures to create carousel items
+            foreach ($picture as $key => $value) {
+                $html .= "<div class='carousel-item";
+                if ($key == 0) {
+                    $html .= " active";
+                }
+                $html .= "'>";
+                $html .= "<img src='./assets/images/room/$value[name]' class='d-block w-100' alt='...'>";
+                $html .= "</div>";
+            }
+
             $html .= "</div>";
             $html .= "<button class='carousel-control-prev' type='button' data-bs-target='#carousel$room[id]' data-bs-slide='prev'>";
             $html .= "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
@@ -140,99 +148,107 @@
             $html .= "</div>";
             $html .= "</div>";
 
-            // echo json_encode($data);
             echo $html;
+        } else {
 
-        }
-        $sql = '';
-        if (substr($type, 0, 5) == 'paket') {
-            $sql = "SELECT * FROM bundling WHERE id = $id";
-            $res = mysqli_query($conn, $sql);
-            $bundling = mysqli_fetch_assoc($res);
+            $sql = '';
+            if (substr($type, 0, 5) == 'paket') {
+                $sql = "SELECT * FROM bundling WHERE id = $id";
+                $res = mysqli_query($conn, $sql);
+                $bundling = mysqli_fetch_assoc($res);
 
-            $sql = "SELECT * FROM facilityonbundling WHERE bundlingId = $id";
-            $res = mysqli_query($conn, $sql);
-            while ($row = mysqli_fetch_assoc($res)) {
-                $facility[] = $row;
-            }
-
-            foreach ($facility as $key => $value) {
-                $sql = "SELECT * FROM facility WHERE id = ?";
-                $res = select($sql, [$value['facilityId']], 'i');
+                $sql = "SELECT f.* FROM facilityonbundling fb
+                JOIN facility f ON fb.facilityId = f.id
+                WHERE fb.bundlingId = $id";
+                $res = mysqli_query($conn, $sql);
+                $facility = [];
                 while ($row = mysqli_fetch_assoc($res)) {
-                    $facility[$key] = $row;
-
+                    $facility[] = $row;
                 }
-            }
 
-            $sql = "SELECT * FROM ruleonbundling WHERE bundlingId = ?";
-            $res = select($sql, [$id], 'i');
-            while ($row = mysqli_fetch_assoc($res)) {
-                $rule[] = $row;
-            }
-
-            foreach ($rule as $key => $value) {
-                $sql = "SELECT * FROM rule WHERE id = ?";
-                $res = select($sql, [$value['ruleId']], 'i');
+                $sql = "SELECT p.* FROM pictureonbundling pb
+                JOIN picture p ON pb.pictureId = p.id
+                WHERE pb.bundlingId = $id";
+                $res = mysqli_query($conn, $sql);
+                $picture = [];
                 while ($row = mysqli_fetch_assoc($res)) {
-                    $rule[$key] = $row;
-
+                    $picture[] = $row;
                 }
+
+                $sql = "SELECT r.* FROM ruleonbundling rb
+                JOIN rule r ON rb.ruleId = r.id
+                WHERE rb.bundlingId = $id";
+                $res = mysqli_query($conn, $sql);
+                $rule = [];
+                while ($row = mysqli_fetch_assoc($res)) {
+                    $rule[] = $row;
+                }
+
+                $data = [
+                    'bundling' => $bundling,
+                    'facility' => $facility,
+                    'rule' => $rule,
+                    'picture' => $picture
+                ];
+
+                $html = "<div class='card mb-4 border-0 shadow'>";
+                $html .= "<div class='row g-0 p-3 align-items-center'>";
+                $html .= "<div class='col-md-5 mb-lg-0 mb-md-0 mb-3'>";
+                $html .= "<div id='carousel$bundling[id]' class='carousel slide'>";
+                $html .= "<div class='carousel-indicators'>";
+                for ($i = 0; $i < count($picture); $i++) {
+                    $html .= "<button type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide-to='$i'";
+                    if ($i == 0) {
+                        $html .= " class='active'";
+                    }
+                    $html .= " aria-label='Slide $i'></button>";
+                }
+                $html .= "</div>";
+                $html .= "<div class='carousel-inner'>";
+                foreach ($picture as $key => $value) {
+                    $html .= "<div class='carousel-item";
+                    if ($key == 0) {
+                        $html .= " active";
+                    }
+                    $html .= "'>";
+                    $html .= "<img src='./assets/images/bundling/$value[name]' class='d-block w-100' alt='...'>";
+                    $html .= "</div>";
+                }
+                $html .= "</div>";
+                $html .= "<button class='carousel-control-prev' type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide='prev'>";
+                $html .= "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
+                $html .= "<span class='visually-hidden'>Previous</span>";
+                $html .= "</button>";
+                $html .= "<button class='carousel-control-next' type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide='next'>";
+                $html .= "<span class='carousel-control-next-icon' aria-hidden='true'></span>";
+                $html .= "<span class='visually-hidden'>Next</span>";
+                $html .= "</button>";
+                $html .= "</div>";
+                $html .= "</div>";
+                $html .= "<div class='col-md-4 px-lg-3 px-md-3 px-0'>";
+                $html .= "<h5 class='mb-3'>$bundling[name]</h5>";
+                $html .= "<p class='mb-3'>$bundling[description]</p>";
+                $html .= "<p class='mb-3'>Rp. $bundling[price]</p>";
+                $html .= "<p class='mb-3'>Facility:</p>";
+                $html .= "<ul class='mb-3'>";
+                foreach ($facility as $key => $value) {
+                    $html .= "<li>$value[name]</li>";
+                }
+                $html .= "</ul>";
+                $html .= "<p class='mb-3'>Rule:</p>";
+                $html .= "<ul class='mb-3'>";
+                foreach ($rule as $key => $value) {
+                    $html .= "<li>$value[description]</li>";
+                }
+                $html .= "</ul>";
+                $html .= "</div>";
+                $html .= "</div>";
+                $html .= "</div>";
+
+                echo $html;
+
+
             }
-
-            $html = "<div class='card mb-4 border-0 shadow'>";
-            $html .= "<div class='row g-0 p-3 align-items-center'>";
-            $html .= "<div class='col-md-5 mb-lg-0 mb-md-0 mb-3'>";
-            $html .= "<div id='carousel$bundling[id]' class='carousel slide'>";
-            $html .= "<div class='carousel-indicators'>";
-            $html .= "<button type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide-to='0' class='active' aria-current='true' aria-label='Slide 1'></button>";
-            $html .= "<button type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide-to='1' aria-label='Slide 2'></button>";
-            $html .= "<button type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide-to='2' aria-label='Slide 3'></button>";
-            $html .= "</div>";
-            $html .= "<div class='carousel-inner'>";
-            $html .= "<div class='carousel-item active'>";
-            $html .= "<img src='./assets/images/bundling/$bundling[picture]' class='d-block w-100' alt='...'>";
-            $html .= "</div>";
-            $html .= "<div class='carousel-item'>";
-            $html .= "<img src='./assets/images/bundling/$bundling[picture]' class='d-block w-100' alt='...'>";
-            $html .= "</div>";
-            $html .= "<div class='carousel-item'>";
-            $html .= "<img src='./assets/images/bundling/$bundling[picture]' class='d-block w-100' alt='...'>";
-            $html .= "</div>";
-            $html .= "</div>";
-            $html .= "<button class='carousel-control-prev' type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide='prev'>";
-            $html .= "<span class='carousel-control-prev-icon' aria-hidden='true'></span>";
-            $html .= "<span class='visually-hidden'>Previous</span>";
-            $html .= "</button>";
-            $html .= "<button class='carousel-control-next' type='button' data-bs-target='#carousel$bundling[id]' data-bs-slide='next'>";
-            $html .= "<span class='carousel-control-next-icon' aria-hidden='true'></span>";
-            $html .= "<span class='visually-hidden'>Next</span>";
-            $html .= "</button>";
-            $html .= "</div>";
-            $html .= "</div>";
-
-            $html .= "<div class='col-md-4 px-lg-3 px-md-3 px-0'>";
-            $html .= "<h5 class='mb-3'>$bundling[name]</h5>";
-            $html .= "<p class='mb-3'>$bundling[description]</p>";
-            $html .= "<p class='mb-3'>Rp. $bundling[price]</p>";
-            $html .= "<p class='mb-3'>Facility:</p>";
-            $html .= "<ul class='mb-3'>";
-            foreach ($facility as $key => $value) {
-                $html .= "<li>$value[name]</li>";
-            }
-            $html .= "</ul>";
-            $html .= "<p class='mb-3'>Rule:</p>";
-            $html .= "<ul class='mb-3'>";
-            foreach ($rule as $key => $value) {
-                $html .= "<li>$value[description]</li>";
-            }
-            $html .= "</ul>";
-            $html .= "</div>";
-            $html .= "</div>";
-            $html .= "</div>";
-
-            echo $html;
-
         }
 
 
@@ -300,7 +316,84 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
         <?php include './admin/inc/scripts.php' ?>
-        <script src="./assets/js/payment.js"></script>
+        <script>
+            $("#form_pembayaran").on("submit", function (e) {
+                e.preventDefault();
+                var dana_number = "0857 2003 4203 1980";
+                var bank_number = "1234567890";
+                var html = "";
+                console.log($(this).serialize());
+                $.ajax({
+                    url: "admin/ajax/payment.php?action=pembayaran",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    caches: false,
+                    success: function (response) {
+                        var data = JSON.parse(response);
+                        var type_bundling = "room";
+                        if (data.status == "success") {
+
+                            if (data.room.type != "" && data.room.type != undefined) {
+                                type_bundling = data.room.type;
+                            } else {
+                                type_bundling = "room";
+                            }
+
+                            html += `<form action="admin/ajax/payment.php?action=konfirmasi" method="POST" id="konfirmasi_pembayaran">`;
+                            html += `<h5>Nama: ${data.user.name}</h5>`;
+                            html += `<h5>Email: ${data.user.email}</h5>`;
+                            html += `<h5>Phone: ${data.user.phone}</h5>`;
+
+                            if (data.room.type != "" && data.room.type != undefined) {
+                                type_bundling = data.room.type;
+
+                                html += `<h5>Nama Paket: ${data.room.name}</h5>`;
+                                html +=
+                                    '<h5>Nomor Paket: <span class="text-primary">' +
+                                    data.room.id +
+                                    "</span></h5>";
+                                html += `<h5>Jenis Paket: ${data.room.type}</h5>`;
+                            } else {
+                                type_bundling = "room";
+                                html += `<h5>Nama Kamar: ${data.room.name}</h5>`;
+                                html +=
+                                    '<h5>Nomor Kamar: <span class="text-primary">' +
+                                    data.room.id +
+                                    "</span></h5>";
+                            }
+                            if (data.payment == "dana") {
+                                html += `<h5>Nomor Rekening: <span class="text-primary">${dana_number}</span></h5>`;
+                            } else {
+                                html += `<h5>Nomor Rekening: <span class="text-primary">${bank_number}</span></h5>`;
+                            }
+                            html +=
+                                '<h5>Metode Pembayaran: <span class="text-primary">' +
+                                data.payment.toUpperCase() +
+                                "</span></h5>";
+                            html += `<h5>Total Pembayaran:<span class="text-danger"> Rp ${data.total_price.toLocaleString('id-ID')} (PPN 10%) </span> </h5>`;
+                            html += `<h5>Check In: <span class="text-primary">${data.check_in}</span></h5>`;
+                            html += `<h5>Check Out: <span class="text-primary">${data.check_out}</span></h5>`;
+                            html += `<button type="submit" class="btn btn-primary">Konfirmasi</button>`;
+                            // hidden input
+                            html += `<input type="hidden" name    ="type_bundling" value="${type_bundling}">`;
+                            html += `<input type="hidden" name    ="user_id" value="${data.user.id}">`;
+                            html += `<input type="hidden" name    ="room_id" value="${data.room.id}">`;
+                            html += `<input type="hidden" name    ="payment" value="${data.payment}">`;
+                            html += `<input type="hidden" name    ="total_price" value="${data.total_price}">`;
+                            html += `<input type="hidden" name    ="check_in" value="${data.check_in}">`;
+                            html += `<input type="hidden" name    ="check_out" value="${data.check_out}">`;
+                            html += `</form>`;
+                        } else {
+                            html += `<h3>${data.message}</hh3`;
+                        }
+                        $("#formModalPaymey").html(html);
+                    },
+                });
+            });
+            $("#konfirmasi_pembayaran").on("submit", function (e) {
+                e.preventDefault();
+            });
+        </script>
 </body>
 
 </html>

@@ -3,6 +3,8 @@ session_start();
 require 'app/config/config.php';
 require 'app/core/Database.php';
 require 'app/model/Facility.php';
+require 'app/model/Capacity.php';
+require 'app/model/Picture.php';
 require 'app/model/Rule.php';
 require 'app/model/Room.php';
 require 'app/model/User.php';
@@ -45,8 +47,6 @@ if (isset($_POST['user_login'])) {
     } else {
         $_SESSION["sukses"] = $json['message'];
     }
-    echo json_encode($json);
-
     if ($json['success'] == true && $json['data']['role'] == 'ADMIN') {
         redirect('admin/dashboard');
     }
@@ -87,6 +87,9 @@ if (isset($_POST['user_login'])) {
                         <li><a class="dropdown-item" href="pktCamp">Paket Camp</a></li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active me-2" aria-current="page" href="pemesanan">Pemesanan</a>
+                </li>
             </ul>
             <div class="d-flex">
                 <?php
@@ -96,7 +99,6 @@ if (isset($_POST['user_login'])) {
                     $user = $_SESSION['data'];
                 }
                 if (!empty($user)) {
-                    echo "<a href='user' class='btn btn-outline-dark shadow-none me-lg-3 me-2'>Dashboard</a>";
                     echo "<a href='logout' class='btn btn-outline-dark shadow-none me-lg-2 me-3'>Logout</a>";
                 } else {
                     echo "<button type='button' class='btn btn-outline-dark shadow-none me-lg-3 me-2' data-bs-toggle='modal' data-bs-target='#loginModal'>Login</button>";

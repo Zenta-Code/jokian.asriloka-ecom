@@ -1,14 +1,30 @@
 <?php
-require './../lib/db.php';
+require 'lib/db.php';
+require 'vendor/autoload.php';
+use Dompdf\Dompdf;
+
+
 
 $userId = $_GET['user_id'];
 $roomId = $_GET['room_id'];
 $checkIn = $_GET['check_in'];
 $checkOut = $_GET['check_out'];
 $bookingId = $_GET['booking_id'];
-$message = $_GET['message'];
-$class = $_GET['class'];
 $conn = $GLOBALS['conn'];
+
+ob_start();
+
+function savePdf()
+{
+    $html = ob_get_clean();
+    $html = preg_replace('/<button.*?>(.*?)<\/button>/i', '', $html);
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $dompdf->stream('invoice ' . $_GET['booking_id'] . '.pdf', array("Attachment" => false));
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,16 +36,12 @@ $conn = $GLOBALS['conn'];
     <link rel="stylesheet" href="invoice.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <!-- <?php require('inc/links.php'); ?> -->
-
 </head>
 
 <body>
-
-
-    <div class="container">
+    <div id="invoice" class="container">
         <div class="row">
             <div class="col-xs-12">
-
                 <div class="invoice-title">
                     <h2>Invoice</h2>
                     <?php
@@ -45,28 +57,12 @@ $conn = $GLOBALS['conn'];
                             $sql = "SELECT * FROM user WHERE id = $userId";
                             $res = mysqli_query($conn, $sql);
                             $user = mysqli_fetch_assoc($res);
-                            echo "<br>$user[name]<br>";
-                            echo "$user[address]<br>";
-                            echo "$user[phone]<br>";
-                            echo "$user[email]<br>";
+                            echo "<br>{$user['name']}<br>";
+                            echo "{$user['address']}<br>";
+                            echo "{$user['phone']}<br>";
+                            echo "{$user['email']}<br>";
                             ?>
                             <br>
-                        </address>
-                    </div>
-                    <div class="col-xs-6 text-right">
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <address>
-
-                            <?php
-
-                            ?>
-                            <strong>Pembayaran : </strong><br>
-                            Transfer : "..." (No Rekening Pemesan)<br>
-                            emailpemesan@email.com
                         </address>
                     </div>
                     <div class="col-xs-6 text-right">
@@ -81,7 +77,6 @@ $conn = $GLOBALS['conn'];
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -95,24 +90,26 @@ $conn = $GLOBALS['conn'];
                                     <tr>
                                         <td><strong>Item</strong></td>
                                         <td class="text-center"><strong>Check-In</strong></td>
+                                        <td class="text-center"><strong>Check-Out</strong></td>
                                         <td class="text-center"><strong>Harga</strong></td>
                                         <td class="text-center"><strong>Kuantitas</strong></td>
                                         <td class="text-center"><strong>Total</strong></td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- foreach ($order->lineItems as $line) or some such thing here -->
                                     <tr>
                                         <?php
                                         $sql = "SELECT * FROM room WHERE id = $roomId";
                                         $res = mysqli_query($conn, $sql);
                                         $room = mysqli_fetch_assoc($res);
-                                        echo "<td>$room[name]</td>";
-                                        echo "<td class='text-center'>$checkIn</td>";
-                                        echo "<td class='text-center'>$room[price]</td>";
-                                        echo "<td class='text-center'>1</td>";
-                                        echo "<td class='text-right'>$room[price]</td>";
-
+                                        $totalDays = (strtotime($checkOut) - strtotime($checkIn)) / (60 * 60 * 24);
+                                        $totalPrice = $totalDays * $room['price'];
+                                        echo "<td>{$room['name']}</td>";
+                                        echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkIn)) . "</td>";
+                                        echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkOut)) . "</td>";
+                                        echo "<td class='text-center'>{$room['price']}</td>";
+                                        echo "<td class='text-center'>$totalDays</td>";
+                                        echo "<td class='text-right'>$totalPrice</td>";
                                         ?>
                                     </tr>
                                     <tr>
@@ -125,7 +122,6 @@ $conn = $GLOBALS['conn'];
                                 </tbody>
                             </table>
                         </div>
-
                         <p class="text-danger bg-danger">
                             <b>*Pastikan anda menyimpan bukti invoice ini</b>
                         </p>
@@ -134,19 +130,25 @@ $conn = $GLOBALS['conn'];
             </div>
         </div>
         <div class="mt-4">
-            <button id="generatePdfButton" class="btn btn-primary">Print</button>
+            <button id="printChrome" class="btn btn-primary">Print</button>
+            <!-- save pdf using savePdf function -->
+            <button id="savePdf" class="btn btn-primary">Save PDF</button>
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script>
-        document.getElementById('generatePdfButton').addEventListener('click', function () {
+        document.getElementById('printChrome').addEventListener('click', function () {
             this.style.display = 'none';
             window.print();
-
             this.style.display = 'block';
         });
+        document.getElementById('savePdf').addEventListener('click', function () {
+            <?php savePdf(); ?>
+        });
+
+
     </script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</body>
 
 </html>

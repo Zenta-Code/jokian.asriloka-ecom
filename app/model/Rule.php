@@ -8,7 +8,7 @@ class Rule
         $this->db = new Database;
     }
 
-    public function getRule()
+    public function getRuleByPublicity($isGeneral)
     {
         $q = 'SELECT * FROM rule';
         $this->db->query($q);
@@ -38,13 +38,13 @@ class Rule
         return $res;
     }
 
-    public function addRule($data)
+    public function getRuleByRoomId($id)
     {
-        $q = 'INSERT INTO rule (name, description) VALUES (?, ?)';
+        $q = 'SELECT * FROM ruleonroom WHERE roomId = ?';
         $this->db->query($q);
-        $this->db->bind(1, $data['name']);
-        $this->db->bind(2, $data['description']);
-        $this->db->execute();
-        return $this->db->rowCount();
+        $this->db->bind(1, $id);
+        $res = $this->db->resultSet();
+        return $res;
+
     }
 }
