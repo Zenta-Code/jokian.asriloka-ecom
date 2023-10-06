@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 04, 2023 at 09:50 PM
+-- Generation Time: Oct 06, 2023 at 09:14 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -37,15 +37,17 @@ CREATE TABLE `booking` (
   `totalPrice` int(50) NOT NULL,
   `bundlingId` int(11) DEFAULT NULL,
   `paymentMethod` enum('DP','FULL') DEFAULT NULL,
-  `userPayed` int(50) DEFAULT NULL
+  `userPayed` int(50) DEFAULT NULL,
+  `pictureId` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`id`, `userId`, `checkIn`, `checkOut`, `roomId`, `status`, `totalPrice`, `bundlingId`, `paymentMethod`, `userPayed`) VALUES
-(44, 7, '2023-10-04 00:00:00.000', '2023-10-05 00:00:00.000', 73, 'CHECKEDIN', 385000, NULL, 'DP', 385000);
+INSERT INTO `booking` (`id`, `userId`, `checkIn`, `checkOut`, `roomId`, `status`, `totalPrice`, `bundlingId`, `paymentMethod`, `userPayed`, `pictureId`) VALUES
+(44, 7, '2023-10-04 00:00:00.000', '2023-10-05 00:00:00.000', 73, 'CHECKEDIN', 385000, NULL, 'DP', 385000, NULL),
+(47, 8, '2023-10-06 00:00:00.000', '2023-10-07 00:00:00.000', 71, 'BOOKED', 330000, NULL, 'DP', 100000, 154);
 
 -- --------------------------------------------------------
 
@@ -323,7 +325,19 @@ INSERT INTO `picture` (`id`, `name`) VALUES
 (139, 'slide2.jpg'),
 (140, 'perusahaan.jpeg'),
 (141, 'perusahaan.jpeg'),
-(142, 'perusahaan.jpeg');
+(142, 'perusahaan.jpeg'),
+(143, 'Frame 2063.png'),
+(144, NULL),
+(145, 'Frame 1.png'),
+(146, 'image.jpg'),
+(147, 'Frame 2063.png'),
+(148, 'Group 31.png'),
+(149, 'Frame 1.png'),
+(150, 'Group 31.png'),
+(151, 'Frame 2063.png'),
+(152, 'Frame 1.png'),
+(153, 'Group 31.png'),
+(154, '787da2457723b52053320b1d6de0a63c.png');
 
 -- --------------------------------------------------------
 
@@ -518,9 +532,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `password`, `picture`, `phone`, `dob`, `address`, `role`, `token`) VALUES
-(1, 'Admin', 'admin1@asriloka.com', '$2y$10$sOyO5sIOdqKUI/aQ9567IuoTkZCCClTXUUyaaucfEpAn5JPlz564y', NULL, NULL, '2023-09-25 17:39:33.255', NULL, 'ADMIN', '7EOkfsK8qhaXR4NW4fIt71f5MKnvLn7KM2e1SdxMFSg='),
+(1, 'Admin', 'admin1@asriloka.com', '$2y$10$sOyO5sIOdqKUI/aQ9567IuoTkZCCClTXUUyaaucfEpAn5JPlz564y', NULL, NULL, '2023-09-25 17:39:33.255', NULL, 'ADMIN', 'j5nB/sXjdifsvzy9bBL1I2uKSCHqZH5b0Usfpk6YAkA='),
 (2, 'User', 'usertest@asriloka.com', '$2y$10$8QLNcqg5ujhpZAefgHD27OAFwcCReL5T34q8hhD7TCFCvvq2y77Dq', NULL, '1234567890', '2000-01-01 00:00:00.000', 'User Address', 'ADMIN', 'undefined'),
-(7, 'Solihah', 'user@user.com', '$2y$10$PCV6t8bLPAjdvzVXjHA4CuaJZLZ9fmzziLAfx5qwN6MuiWOKW3Oce', NULL, '085732030855', '2023-10-01 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'k3c/4FtA0Z/MaSijBYQf/KSQrl4QkIrOkOTtc0OZBVU=');
+(7, 'Solihah', 'user@user.com', '$2y$10$PCV6t8bLPAjdvzVXjHA4CuaJZLZ9fmzziLAfx5qwN6MuiWOKW3Oce', NULL, '085732030855', '2023-10-01 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'k3c/4FtA0Z/MaSijBYQf/KSQrl4QkIrOkOTtc0OZBVU='),
+(8, 'Subagiyo', 'a@a.com', '$2y$10$U0CQr.vEk7PMX/1fFOd5F.TJGLXBrLpytrEqZJx3W2RF687dyS47i', '1696573291-651fa76b4b493.jpg', '12', '2023-10-10 00:00:00.000', 'a', 'USER', 'PA/9iCOrLLDDvS79j+8pjyjauK96+PV/eZAkz05bCsU=');
 
 --
 -- Indexes for dumped tables
@@ -656,7 +671,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `bundling`
@@ -686,7 +701,7 @@ ALTER TABLE `generalinformation`
 -- AUTO_INCREMENT for table `picture`
 --
 ALTER TABLE `picture`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 
 --
 -- AUTO_INCREMENT for table `review`
@@ -710,7 +725,7 @@ ALTER TABLE `rule`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables

@@ -396,12 +396,13 @@
                             if (data.sisa != 0) {
                                 html += ` (DP)</span></h5>`;
                                 html += `<h5>Nominal DP: <span class="text-primary">Rp ${data.sisa.toLocaleString('id-ID')}</span></h5>`;
+                                html += `<h5>Sisa Pembayaran : <span class="text-danger">Rp ${(data.total_price - data.sisa).toLocaleString('id-ID')} (Waktu Check In)</span></h5>`;
                             } else {
                                 html += "</span></h5>";
+                                html += `<h5>Total Pembayaran:<span class="text-danger"> Rp ${data.total_price.toLocaleString('id-ID')} (PPN 10%) </span> </h5>`;
                             }
 
 
-                            html += `<h5>Total Pembayaran:<span class="text-danger"> Rp ${data.total_price.toLocaleString('id-ID')} (PPN 10%) </span> </h5>`;
 
                             html += `<button type="submit" class="btn btn-primary">Konfirmasi</button>`;
                             // hidden input

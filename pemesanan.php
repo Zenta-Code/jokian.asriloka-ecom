@@ -78,6 +78,7 @@
                             $html .= "<th scope='col'>Status</th>";
                             $html .= "<th scope='col'>Pembayaran</th>";
                             $html .= "<th scope='col'>Invoice</th>";
+                            $html .= "<th scope='col'>Upload Bukti Pembayaran</th>";
                             $html .= "</tr>";
 
                             $html .= "</thead>";
@@ -133,6 +134,9 @@
                                 } else {
                                     $html .= "<td><a href='invoice.php?booking_id=$value[id]&user_id=$user[id]&room_id=$value[roomId]&check_in=$value[checkIn]&check_out=$value[checkOut]' class='btn btn-primary'>Invoice</a></td>";
                                 }
+                                if ($value['status'] == 'BOOKED' && $value['paymentMethod'] == 'DP') {
+                                    $html .= "<td><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#uploadBuktiPembayaran' data-bs-id='$value[id]'>Upload Bukti Pembayaran</button></td>";
+                                }
                                 $html .= "</tr>";
                             }
                             $html .= "</tbody>";
@@ -144,27 +148,85 @@
                     </div>
                 </div>
 
-            </div>
-            <?php
-            if (isset($_SESSION['data'])) {
-                echo "<h5 class='text-center mt-5'>No Rekening Hotel</h5>";
-                echo "<span class='pl-5'>Transfer ke nomor rekening <strong>di bawah ini</strong></span>";
-                echo "<span class='pl-5'>Dengan mencantumkan <strong>nomor pemesanan</strong></span>";
-                echo "<div class='card m-4 p-4'>";
-                echo "<h4>BCA</h4>";
-                echo "<h5>1234567890</h5>";
-                echo "</div>";
-                echo "<div class='card m-4 p-4'>";
-                echo "<h4>BCA</h4>";
-                echo "<h5>1234567890</h5>";
-                echo "</div>";
-            }
-            ?>
+                <div class="modal fade" id="uploadBuktiPembayaran" tabindex="-1"
+                    aria-labelledby="uploadBuktiPembayaranLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="uploadBuktiPembayaranLabel">Upload Bukti Pembayan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" id="uploadBuktiPembayarnBody">
+                                <form method="POST" enctype="multipart/form-data" id="formUploadBukti">
+                                    <input type="hidden" name="action" value="uploadBuktiPembayaran">
+                                    <input type="hidden" name="booking_id" id="booking_id">
+                                    <div class="mb-3">
+                                        <label for="recipient-name" class="col-form-label">Upload Bukti
+                                            Pembayaran</label>
+                                        <input type="file" class="form-control" id="recipient-name"
+                                            name="bukti_pembayaran">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                    </div>
+                                </form>
 
-        </div>
-    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div </div>
+                    <?php
+                    if (isset($_SESSION['data'])) {
+                        echo "<h5 class='text-center mt-5'>No Rekening Hotel</h5>";
+                        echo "<span class='pl-5'>Transfer ke nomor rekening <strong>di bawah ini</strong></span>";
+                        echo "<span class='pl-5'>Dengan mencantumkan <strong>nomor pemesanan</strong></span>";
+                        echo "<div class='card m-4 p-4'>";
+                        echo "<h4>BCA</h4>";
+                        echo "<h5>1234567890</h5>";
+                        echo "</div>";
+                        echo "<div class='card m-4 p-4'>";
+                        echo "<h4>BCA</h4>";
+                        echo "<h5>1234567890</h5>";
+                        echo "</div>";
+                    }
+                    ?>
+
+                </div>
+            </div>
+            <?php require('./admin/inc/scripts.php'); ?>
+            <script>
+                $('#uploadBuktiPembayaran').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget) // Button that triggered the modal
+                    var id = button.data('bs-id') // Extract info from data-bs-* attributes
+                    var modal = $(this)
+                    modal.find('.modal-body #booking_id').val(id)
+                })
+                $('#formUploadBukti').submit(function (e) {
+                    e.preventDefault();
+                    // id 
+                    var id = $('#booking_id').val();
+                    var formData = new FormData(this);
+                    formData.append('booking_id', id);
+                    console.log(formData);
+                    $.ajax({
+                        url: 'admin/ajax/payment.php?action=uploadBuktiPembayaran',
+                        type: 'POST',
+                        data: formData,
+                        success: function (data) {
+                            alert(data);
+                            console.log(data);
+                            location.reload();
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                });
+            </script>
 </body>
-<?php require('./admin/inc/scripts.php'); ?>
 <?php
 
 if (isset($_SESSION['data'])) {

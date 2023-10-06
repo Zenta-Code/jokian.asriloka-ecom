@@ -176,4 +176,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
 
 }
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQUEST['action'] === 'uploadBuktiPembayaran') {
+    $data = $_POST;
+    $bukti = $_FILES;
+    $booking_id = $data['booking_id'];
+
+    // hash file name
+    $file_name = md5($_FILES["bukti_pembayaran"]["name"] . time());
+
+    // get file extension
+    $file_extension = pathinfo($_FILES["bukti_pembayaran"]["name"], PATHINFO_EXTENSION);
+    $picture_name = $file_name . '.' . $file_extension;
+
+    // upload file
+    $target_dir = './../../assets/images/bukti_pembayaran/';
+    $target_file = $target_dir . $picture_name;
+    if (move_uploaded_file($_FILES["bukti_pembayaran"]["tmp_name"], $target_file)) {
+        $sql = "INSERT INTO picture (name) VALUES (?)";
+        $res = update($sql, [$picture_name], 's');
+        if ($res) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Bukti pembayaran berhasil diupload'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'failed',
+                'message' => 'Bukti pembayaran gagal diupload'
+            ]);
+        }
+    } else {
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Bukti pembayaran gagal diupload'
+        ]);
+    }
+
+    $sql = "SELECT * FROM picture WHERE name = '$picture_name'";
+    $res = mysqli_query($conn, $sql);
+    $picture = mysqli_fetch_assoc($res);
+
+    $sql = "UPDATE booking SET pictureId = ? WHERE id = ?";
+    $res = update($sql, [$picture['id'], $booking_id], 'ii');
+
+
+    if ($res) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Bukti pembayaran berhasil diupload'
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Bukti pembayaran gagal diupload'
+        ]);
+    }
+
+}
+
+
+
 ?>

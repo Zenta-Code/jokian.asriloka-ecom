@@ -48,6 +48,7 @@ adminLogin();
                                     <th class="text-center">Total DP</th>
                                     <th class="text-center">Total Harga</th>
                                     <th class="text-center">Sisa Pembayaran</th>
+                                    <th class="text-center">Bukti Pembayaran</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -116,6 +117,21 @@ adminLogin();
                                     $html .= "<td class='text-center'>$value[userPayed]</td>";
                                     $html .= "<td class='text-center'>$value[totalPrice]</td>";
                                     $html .= "<td class='text-center'>" . ($value['totalPrice'] - $value['userPayed']) . "</td>";
+
+                                    if ($value['pictureId'] != null) {
+                                        $sql = "SELECT * FROM picture WHERE id = ?";
+                                        $res = select($sql, [$value['pictureId']], 'i');
+                                        while ($row = mysqli_fetch_assoc($res)) {
+                                            $picture[] = $row;
+                                        }
+                                        $html .= "<td class='text-center'>";
+                                        foreach ($picture as $k => $v) {
+                                            $html .= "<img src='../assets/images/bukti_pembayaran/$v[name]' alt='$v[name]' width='100px'><br><a href='../assets/images/bukti_pembayaran/$v[name]' download='$v[name]'><i class='bi bi-download' style='font-size: 24px;'></i></a>";
+
+                                        }
+                                    } else {
+                                        $html .= "<td class='text-center'>-</td>";
+                                    }
 
                                     $html .= "<td class='text-center'>";
                                     $html .= "<button type='button' class='btn btn-primary view-button' data-bs-toggle='modal' data-bs-target='#viewModal' data-bs-id='$value[id]' data-bs-total-price='$value[totalPrice]'>View</button>";
