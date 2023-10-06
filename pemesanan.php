@@ -41,30 +41,33 @@
                             echo "<h5 class='card-title'>Pemesanan</h5>";
                             $sql = "SELECT * FROM booking WHERE userId = ?";
                             $res = select($sql, [$user['id']], 'i');
+                            $booking = [];
                             while ($row = mysqli_fetch_assoc($res)) {
                                 $booking[] = $row;
                             }
-                            foreach ($booking as $key => $value) {
-                                if ($value['roomId'] == null) {
-                                    // fetch bundling
-                                    $sql = "SELECT * FROM bundling WHERE id = ?";
-                                    $res = select($sql, [$value['bundlingId']], 'i');
+                            if (count($booking) != 0) {
+                                foreach ($booking as $key => $value) {
+                                    if ($value['roomId'] == null) {
+                                        // fetch bundling
+                                        $sql = "SELECT * FROM bundling WHERE id = ?";
+                                        $res = select($sql, [$value['bundlingId']], 'i');
 
-                                    // append bundling
-                                    while ($row = mysqli_fetch_assoc($res)) {
-                                        $room[] = $row;
+                                        // append bundling
+                                        while ($row = mysqli_fetch_assoc($res)) {
+                                            $room[] = $row;
+                                        }
+
+                                    } else {
+                                        // fetch room
+                                        $sql = "SELECT * FROM room WHERE id = ?";
+                                        $res = select($sql, [$value['roomId']], 'i');
+
+                                        // append room
+                                        while ($row = mysqli_fetch_assoc($res)) {
+                                            $room[] = $row;
+                                        }
+
                                     }
-
-                                } else {
-                                    // fetch room
-                                    $sql = "SELECT * FROM room WHERE id = ?";
-                                    $res = select($sql, [$value['roomId']], 'i');
-
-                                    // append room
-                                    while ($row = mysqli_fetch_assoc($res)) {
-                                        $room[] = $row;
-                                    }
-
                                 }
                             }
                             $html = "<table class='table table-striped'>";

@@ -118,6 +118,8 @@ adminLogin();
                                     $html .= "<td class='text-center'>$value[totalPrice]</td>";
                                     $html .= "<td class='text-center'>" . ($value['totalPrice'] - $value['userPayed']) . "</td>";
 
+                                    // $html .= "<td class='text-center'> $value[pictureId] </td>";
+                                
                                     if ($value['pictureId'] != null) {
                                         $sql = "SELECT * FROM picture WHERE id = ?";
                                         $res = select($sql, [$value['pictureId']], 'i');
@@ -126,7 +128,10 @@ adminLogin();
                                         }
                                         $html .= "<td class='text-center'>";
                                         foreach ($picture as $k => $v) {
-                                            $html .= "<img src='../assets/images/bukti_pembayaran/$v[name]' alt='$v[name]' width='100px'><br><a href='../assets/images/bukti_pembayaran/$v[name]' download='$v[name]'><i class='bi bi-download' style='font-size: 24px;'></i></a>";
+                                            if ($v['id'] == $value['pictureId']) {
+                                                $html .= "<img src='../assets/images/bukti_pembayaran/$v[name]' alt='$v[name]' width='100px'><br><a href='../assets/images/bukti_pembayaran/$v[name]' download='$v[name]'><i class='bi bi-download' style='font-size: 24px;'></i></a>";
+                                                break;
+                                            }
 
                                         }
                                     } else {
