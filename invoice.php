@@ -7,6 +7,8 @@ use Dompdf\Dompdf;
 
 $userId = $_GET['user_id'];
 $roomId = $_GET['room_id'];
+$bundlingId = $_GET['bundling_id'];
+$number_of_people = $_GET['number_of_people'];
 $checkIn = $_GET['check_in'];
 $checkOut = $_GET['check_out'];
 $bookingId = $_GET['booking_id'];
@@ -92,24 +94,47 @@ function savePdf()
                                         <td class="text-center"><strong>Check-In</strong></td>
                                         <td class="text-center"><strong>Check-Out</strong></td>
                                         <td class="text-center"><strong>Harga</strong></td>
-                                        <td class="text-center"><strong>Kuantitas</strong></td>
+                                        <?php
+                                        if ($roomId != null) {
+                                            echo "<td class='text-center'><strong>Hari</strong></td>";
+                                        } else {
+                                            echo "<td class='text-center'><strong>Hari</strong></td>";
+                                            echo "<td class='text-center'><strong>Jumlah Orang</strong></td>";
+                                        }
+                                        ?>
                                         <td class="text-center"><strong>Total</strong></td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <?php
-                                        $sql = "SELECT * FROM room WHERE id = $roomId";
-                                        $res = mysqli_query($conn, $sql);
-                                        $room = mysqli_fetch_assoc($res);
-                                        $totalDays = (strtotime($checkOut) - strtotime($checkIn)) / (60 * 60 * 24);
-                                        $totalPrice = $totalDays * $room['price'];
-                                        echo "<td>{$room['name']}</td>";
-                                        echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkIn)) . "</td>";
-                                        echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkOut)) . "</td>";
-                                        echo "<td class='text-center'>{$room['price']}</td>";
-                                        echo "<td class='text-center'>$totalDays</td>";
-                                        echo "<td class='text-right'>$totalPrice</td>";
+                                        // echo json_encode($bundlingId);
+                                        if ($roomId != null) {
+                                            $sql = "SELECT * FROM room WHERE id = $roomId";
+                                            $res = mysqli_query($conn, $sql);
+                                            $room = mysqli_fetch_assoc($res);
+                                            $totalDays = (strtotime($checkOut) - strtotime($checkIn)) / (60 * 60 * 24);
+                                            $totalPrice = $totalDays * $room['price'];
+                                            echo "<td>{$room['name']}</td>";
+                                            echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkIn)) . "</td>";
+                                            echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkOut)) . "</td>";
+                                            echo "<td class='text-center'>{$room['price']}</td>";
+                                            echo "<td class='text-center'>$totalDays</td>";
+                                            echo "<td class='text-right'>$totalPrice</td>";
+                                        } else {
+                                            $sql = "SELECT * FROM bundling WHERE id = $bundlingId";
+                                            $res = mysqli_query($conn, $sql);
+                                            $bundling = mysqli_fetch_assoc($res);
+                                            $totalDays = (strtotime($checkOut) - strtotime($checkIn)) / (60 * 60 * 24);
+                                            $totalPrice = $totalDays * $bundling['price'];
+                                            echo "<td>{$bundling['name']}</td>";
+                                            echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkIn)) . "</td>";
+                                            echo "<td class='text-center'>" . date('Y-m-d', strtotime($checkOut)) . "</td>";
+                                            echo "<td class='text-center'>{$bundling['price']}</td>";
+                                            echo "<td class='text-center'>$totalDays</td>";
+                                            echo "<td class='text-center'>$number_of_people</td>";
+                                            echo "<td class='text-right'>$totalPrice</td>";
+                                        }
                                         ?>
                                     </tr>
                                     <tr>

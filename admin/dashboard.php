@@ -49,6 +49,7 @@ adminLogin();
                                     <th class="text-center">Total Harga</th>
                                     <th class="text-center">Sisa Pembayaran</th>
                                     <th class="text-center">Bukti Pembayaran</th>
+                                    <th class="text-center">Jumlah Peserta</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -134,6 +135,12 @@ adminLogin();
                                             }
 
                                         }
+                                    } else {
+                                        $html .= "<td class='text-center'>-</td>";
+                                    }
+
+                                    if ($value['capacity'] != null) {
+                                        $html .= "<td class='text-center'>$value[capacity]</td>";
                                     } else {
                                         $html .= "<td class='text-center'>-</td>";
                                     }

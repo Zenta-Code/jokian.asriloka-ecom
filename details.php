@@ -278,6 +278,18 @@
                         <input type="date" class="form-control" id="check_in" name="check_in" required>
                         <label for="check_out" class="form-label">Tanggal Check Out</label>
                         <input type="date" class="form-control" id="check_out" name="check_out" required>
+                        <?php
+                        if ($type == 'paketLDK' || $type == "paketPERUSAHAAN" || $type == "paketCAMP") {
+                            echo '<label for="number_of_people" class="form-label">Jumlah Orang';
+                            if ($type == 'paketCAMP') {
+                                echo '<span class="text-danger">(min 2 orang)</span>';
+                            } else {
+                                echo '<span class="text-danger">(min 35 orang)</span>';
+                            }
+                            echo '</label>';
+                            echo '<input type="number" class="form-control" id="number_of_people" name="number_of_people" placeholder="Masukkan Jumlah Orang" required>';
+                        }
+                        ?>
 
                         <input type="hidden" value="Transfer Bank" name="payment_method">
 
@@ -350,8 +362,8 @@
                     data: $(this).serialize(),
                     caches: false,
                     success: function (response) {
-                        console.log('Details : ', response);
                         var data = JSON.parse(response);
+                        console.log('Details : ', data);
                         var type_bundling = "room";
                         if (data.status == "success") {
 
@@ -375,6 +387,7 @@
                                     data.room.id +
                                     "</span></h5>";
                                 html += `<h5>Jenis Paket: ${data.room.type}</h5>`;
+                                html += `<h5>Jumlah Orang: ${data.number_of_people}</h5>`;
                             } else {
                                 type_bundling = "room";
                                 html += `<h5>Nama Kamar: ${data.room.name}</h5>`;
@@ -395,15 +408,13 @@
                                 data.payment.toUpperCase();
                             if (data.sisa != 0) {
                                 html += ` (DP)</span></h5>`;
-                                html += `<h5>Nominal DP: <span class="text-primary">Rp ${data.sisa.toLocaleString('id-ID')}</span></h5>`;
-                                html += `<h5>Sisa Pembayaran : <span class="text-danger">Rp ${(data.total_price - data.sisa).toLocaleString('id-ID')} (Waktu Check In)</span></h5>`;
+                                html += `<h5>Nominal DP: <span class="text-primary">Rp ${data.dp.toLocaleString('id-ID')}</span></h5>`;
+                                html += `<h5 class="text-danger">(PPN 10%)</h5>`;
+                                html += `<h5>Sisa Pembayaran : <span class="text-danger">Rp ${(data.sisa).toLocaleString('id-ID')} (Waktu Check In)</span></h5>`;
                             } else {
                                 html += "</span></h5>";
                                 html += `<h5>Total Pembayaran:<span class="text-danger"> Rp ${data.total_price.toLocaleString('id-ID')} (PPN 10%) </span> </h5>`;
                             }
-
-
-
                             html += `<button type="submit" class="btn btn-primary">Konfirmasi</button>`;
                             // hidden input
                             html += `<input type="hidden" name    ="type_bundling" value="${type_bundling}">`;
@@ -415,6 +426,7 @@
                             html += `<input type="hidden" name    ="check_out" value="${data.check_out}">`;
                             html += `<input type="hidden" name    ="tipe_pembayaran" value="${data.tipe_pembayaran}">`;
                             html += `<input type="hidden" name    ="dp" value="${data.dp}">`;
+                            html += `<input type="hidden" name    ="number_of_people" value="${data.number_of_people}">`;
 
                             html += `</form>`;
                         } else {

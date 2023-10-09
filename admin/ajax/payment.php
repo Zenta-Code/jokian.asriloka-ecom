@@ -63,8 +63,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
             die();
         }
     }
+    if ($data['type'] === 'LDK' || $data['type'] === 'PERUSAHAAN') {
+        if ($data['number_of_people'] <= 34) {
+            echo json_encode([
+                'status' => 'failed',
+                'message' => 'Maksimal 35 orang untuk pemesanan LDK dan PERUSAHAAN'
+            ]);
+            die();
+        }
+    } else if ($data['type'] === 'CAMP' && $data['number_of_people'] < 2) {
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Minimal 2 orang untuk pemesanan CAMP'
+        ]);
+        die();
+    }
 
-    // check dp isnot greater than total price and dp must greater than 35% of total price
 
     if ($data['type'] != '') {
         $sql = "SELECT * FROM bundling WHERE id = $room";
@@ -76,10 +90,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
         $room = mysqli_fetch_assoc($res);
     }
 
+    $total_price = 0;
 
+    if ($data['type'] = 'LDK' || $data['type'] = 'PERUSAHAAN') {
+        $total_price = ($room['price'] * $hari) * $data['number_of_people'];
+        $total_price = $total_price + ($total_price * 0.1);
+    } else {
+        $total_price = $room['price'] * $hari;
+        $total_price = $total_price + ($total_price * 0.1);
+    }
 
-    $total_price = $room['price'] * $hari;
-    $total_price = $total_price + ($total_price * 0.1);
 
     $sisa = 0;
     if ($data['tipe_pembayaran'] == 'dp') {
@@ -112,11 +132,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
         'room' => $room,
         'hari' => $hari,
         'payment' => $payment,
-        'check_in' =>  $check_in,
+        'check_in' => $check_in,
         'check_out' => $check_out,
         'dp' => $data['dp'],
         'sisa' => $sisa,
         'tipe_pembayaran' => $data['tipe_pembayaran'],
+        'type_bundling' => $data['type'],
+        'number_of_people' => $data['number_of_people'],
     ]);
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQUEST['action'] === 'konfirmasi') {
@@ -126,16 +148,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
     $room = $data['room_id'];
     $check_in = $data['check_in'];
     $check_out = $data['check_out'];
+    $number_of_people = $data['number_of_people'];
 
     $conn = $GLOBALS['conn'];
 
     if ($data['type_bundling'] == 'room') {
         $sql = "INSERT INTO booking (userId, roomId, checkIn, checkOut,totalPrice, paymentMethod, userPayed) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price'], $data['tipe_pembayaran'], $data['dp']], 'iissisi');
-    } else {
-        $sql = "INSERT INTO booking (userId, bundlingId, checkIn, checkOut,totalPrice, paymentMethod, userPayed) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price'], $data['tipe_pembayaran'], $data['dp']], 'iissisi');
-
+    } else if ($data['type_bundling'] == 'LDK' || $data['type_bundling'] == 'PERUSAHAAN' && $data['number_of_people'] >= 35) {
+        $sql = "INSERT INTO booking (userId, bundlingId, checkIn, checkOut,totalPrice, paymentMethod, userPayed,capacity) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price'], $data['tipe_pembayaran'], $data['dp'], $data['number_of_people']], 'iissisii');
+    } else if ($data['type_bundling'] == 'CAMP' && $data['number_of_people'] >= 2) {
+        $sql = "INSERT INTO booking (userId, bundlingId, checkIn, checkOut,totalPrice, paymentMethod, userPayed,capacity) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+        $res = update($sql, [$user, $room, $check_in, $check_out, $data['total_price'], $data['tipe_pembayaran'], $data['dp'], $data['number_of_people']], 'iissisii');
     }
     if ($res) {
         $message = "Booking was successful!";

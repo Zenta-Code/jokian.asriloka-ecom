@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 06, 2023 at 04:30 PM
+-- Generation Time: Oct 07, 2023 at 05:42 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -38,19 +38,23 @@ CREATE TABLE `booking` (
   `bundlingId` int(11) DEFAULT NULL,
   `paymentMethod` enum('DP','FULL') DEFAULT NULL,
   `userPayed` int(50) DEFAULT NULL,
-  `pictureId` int(11) DEFAULT NULL
+  `pictureId` int(11) DEFAULT NULL,
+  `capacity` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`id`, `userId`, `checkIn`, `checkOut`, `roomId`, `status`, `totalPrice`, `bundlingId`, `paymentMethod`, `userPayed`, `pictureId`) VALUES
-(44, 7, '2023-10-04 00:00:00.000', '2023-10-05 00:00:00.000', 73, 'CHECKEDIN', 385000, NULL, 'DP', 385000, NULL),
-(47, 8, '2023-10-06 00:00:00.000', '2023-10-07 00:00:00.000', 71, 'BOOKED', 330000, NULL, 'DP', 100000, 154),
-(48, 9, '2023-10-26 00:00:00.000', '2023-10-28 00:00:00.000', 71, 'BOOKED', 660000, NULL, 'FULL', 0, NULL),
-(49, 9, '2023-10-13 00:00:00.000', '2023-10-20 00:00:00.000', 74, 'BOOKED', 2695000, NULL, 'DP', 100000, 155),
-(50, 9, '2023-11-01 00:00:00.000', '2023-11-02 00:00:00.000', 74, 'BOOKED', 385000, NULL, 'DP', 123123, 156);
+INSERT INTO `booking` (`id`, `userId`, `checkIn`, `checkOut`, `roomId`, `status`, `totalPrice`, `bundlingId`, `paymentMethod`, `userPayed`, `pictureId`, `capacity`) VALUES
+(44, 7, '2023-10-04 00:00:00.000', '2023-10-05 00:00:00.000', 73, 'CHECKEDIN', 385000, NULL, 'DP', 385000, NULL, NULL),
+(47, 8, '2023-10-06 00:00:00.000', '2023-10-07 00:00:00.000', 71, 'BOOKED', 330000, NULL, 'DP', 100000, 154, NULL),
+(48, 9, '2023-10-26 00:00:00.000', '2023-10-28 00:00:00.000', 71, 'BOOKED', 660000, NULL, 'FULL', 0, NULL, NULL),
+(49, 9, '2023-10-13 00:00:00.000', '2023-10-20 00:00:00.000', 74, 'BOOKED', 2695000, NULL, 'DP', 100000, 155, NULL),
+(50, 9, '2023-11-01 00:00:00.000', '2023-11-02 00:00:00.000', 74, 'BOOKED', 385000, NULL, 'DP', 123123, 156, NULL),
+(51, 9, '2023-10-12 00:00:00.000', '2023-10-13 00:00:00.000', 73, 'BOOKED', 385000, NULL, 'DP', 100000, NULL, NULL),
+(62, 9, '2023-10-21 00:00:00.000', '2023-10-22 00:00:00.000', NULL, 'BOOKED', 2970000, 24, 'DP', 100000, NULL, 36),
+(66, 9, '2023-10-21 00:00:00.000', '2023-10-28 00:00:00.000', NULL, 'BOOKED', 20212500, 24, 'FULL', 0, NULL, 35);
 
 -- --------------------------------------------------------
 
@@ -537,11 +541,11 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `password`, `picture`, `phone`, `dob`, `address`, `role`, `token`) VALUES
-(1, 'Admin', 'admin1@asriloka.com', '$2y$10$sOyO5sIOdqKUI/aQ9567IuoTkZCCClTXUUyaaucfEpAn5JPlz564y', NULL, NULL, '2023-09-25 17:39:33.255', NULL, 'ADMIN', 'yaY2sEh6O47Ylg83tnUsyzMxnhkZtkgFwdHzbiFDtz0='),
+(1, 'Admin', 'admin1@asriloka.com', '$2y$10$sOyO5sIOdqKUI/aQ9567IuoTkZCCClTXUUyaaucfEpAn5JPlz564y', NULL, NULL, '2023-09-25 17:39:33.255', NULL, 'ADMIN', '0aZGjY/eLk/4wrDB2cMm4Gr6GAngzBRtsRHsRfl4kIE='),
 (2, 'User', 'usertest@asriloka.com', '$2y$10$8QLNcqg5ujhpZAefgHD27OAFwcCReL5T34q8hhD7TCFCvvq2y77Dq', NULL, '1234567890', '2000-01-01 00:00:00.000', 'User Address', 'ADMIN', 'undefined'),
 (7, 'Solihah', 'user@user.com', '$2y$10$PCV6t8bLPAjdvzVXjHA4CuaJZLZ9fmzziLAfx5qwN6MuiWOKW3Oce', NULL, '085732030855', '2023-10-01 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'k3c/4FtA0Z/MaSijBYQf/KSQrl4QkIrOkOTtc0OZBVU='),
 (8, 'Subagiyo', 'a@a.com', '$2y$10$U0CQr.vEk7PMX/1fFOd5F.TJGLXBrLpytrEqZJx3W2RF687dyS47i', '1696573291-651fa76b4b493.jpg', '12', '2023-10-10 00:00:00.000', 'a', 'USER', 'uinFeE4sn9X608GszcQPUUJ73ZhyNXvAV9wDlO6dVR8='),
-(9, 'Rahmat Hidayatullah', 'a@b.com', '$2y$10$b5n3UmWlQeO0/PfHuXq7BO/zHXykjazAucS8/VX3XT.nGEh3k47cS', NULL, '085732030855', '2023-10-06 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'NS4pAHY68D2XPfa/I3SuF+VvKT1aFrSsPg4Mb7eLIyU=');
+(9, 'Rahmat Hidayatullah', 'a@b.com', '$2y$10$b5n3UmWlQeO0/PfHuXq7BO/zHXykjazAucS8/VX3XT.nGEh3k47cS', NULL, '085732030855', '2023-10-06 00:00:00.000', 'Dsn.Sidorembug Ds.Balongsari RT.13 RW.04\r\nKec. Gedeg', 'USER', 'r3gJxn6b+vc8kfLZHwxWeQ+dGc0D9xQ6RpwaYika5qo=');
 
 --
 -- Indexes for dumped tables
@@ -552,9 +556,9 @@ INSERT INTO `user` (`id`, `name`, `email`, `password`, `picture`, `phone`, `dob`
 --
 ALTER TABLE `booking`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `Booking_bundlingId_fkey` (`bundlingId`),
   ADD KEY `Booking_userId_fkey` (`userId`),
-  ADD KEY `Booking_roomId_fkey` (`roomId`);
+  ADD KEY `Booking_roomId_fkey` (`roomId`),
+  ADD KEY `Booking_bundlingId_fkey` (`bundlingId`) USING BTREE;
 
 --
 -- Indexes for table `bundling`
@@ -677,7 +681,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `bundling`
