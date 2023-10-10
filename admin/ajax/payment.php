@@ -63,15 +63,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
             die();
         }
     }
+
+    $number_of_people = 1;
+    if (isset($data['number_of_people'])) {
+        $number_of_people = $data['number_of_people'];
+    } else {
+        $number_of_people = 1;
+    }
     if ($data['type'] === 'LDK' || $data['type'] === 'PERUSAHAAN') {
-        if ($data['number_of_people'] <= 34) {
+        if ($number_of_people <= 34) {
             echo json_encode([
                 'status' => 'failed',
                 'message' => 'Maksimal 35 orang untuk pemesanan LDK dan PERUSAHAAN'
             ]);
             die();
         }
-    } else if ($data['type'] === 'CAMP' && $data['number_of_people'] < 2) {
+    } else if ($data['type'] === 'CAMP' && $number_of_people < 2) {
         echo json_encode([
             'status' => 'failed',
             'message' => 'Minimal 2 orang untuk pemesanan CAMP'
@@ -92,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
 
     $total_price = 0;
 
-    if ($data['type'] = 'LDK' || $data['type'] = 'PERUSAHAAN') {
-        $total_price = ($room['price'] * $hari) * $data['number_of_people'];
+    if ($data['type'] != '') {
+        $total_price = ($room['price'] * $hari) * $number_of_people;
         $total_price = $total_price + ($total_price * 0.1);
     } else {
         $total_price = $room['price'] * $hari;
@@ -138,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQ
         'sisa' => $sisa,
         'tipe_pembayaran' => $data['tipe_pembayaran'],
         'type_bundling' => $data['type'],
-        'number_of_people' => $data['number_of_people'],
+        'number_of_people' => $number_of_people,
     ]);
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST['action']) && $_REQUEST['action'] === 'konfirmasi') {
