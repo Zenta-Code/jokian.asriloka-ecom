@@ -137,9 +137,9 @@
                                 } else {
                                     $html .= "<td><a href='invoice.php?booking_id=$value[id]&user_id=$user[id]&room_id=$value[roomId]&check_in=$value[checkIn]&check_out=$value[checkOut]&bundling_id=$value[bundlingId]&number_of_people=$value[capacity]' class='btn btn-primary'>Invoice</a></td>";
                                 }
-                                if ($value['status'] == 'BOOKED' && $value['paymentMethod'] == 'DP') {
-                                    $html .= "<td><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#uploadBuktiPembayaran' data-bs-id='$value[id]'>Upload Bukti Pembayaran</button></td>";
-                                }
+                                // if ($value['status'] == 'BOOKED' && $value['paymentMethod'] == 'DP') {
+                                $html .= "<td><button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#uploadBuktiPembayaran' data-bs-id='$value[id]'>Upload Bukti Pembayaran</button></td>";
+                                // }
                                 $html .= "</tr>";
                             }
                             $html .= "</tbody>";
